@@ -1042,14 +1042,80 @@ footer {
 }
 
 /* ── Responsive ──────────────────────────────── */
-@media (max-width: 600px) {
-  .header-top { padding: 14px 16px; }
-  .page-hero { padding: 24px 16px 20px; }
-  .page-hero h2 { font-size: 1.3rem; }
-  .card { padding: 20px 18px; }
-  .container { padding: 20px 14px 40px; }
-  .tab-btn { padding: 8px 12px; font-size: 0.8rem; }
-  .step-item { padding: 12px 14px 12px 0; }
+@media (max-width: 640px) {
+  /* Header */
+  .header-top {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  nav { width: 100%; }
+  nav a { padding: 7px 11px; font-size: 0.82rem; }
+
+  /* Hero */
+  .page-hero { padding: 22px 14px 18px; }
+  .page-hero h2 { font-size: 1.2rem; }
+  .page-hero p { font-size: 0.85rem; }
+
+  /* Step bar */
+  .step-bar { padding: 0 10px; }
+  .step-item { padding: 10px 8px 10px 0; font-size: 0.75rem; gap: 6px; }
+  .step-item .step-num { width: 20px; height: 20px; font-size: 0.7rem; }
+  .step-sep { display: none; }
+
+  /* Container & cards */
+  .container { padding: 16px 12px 40px; }
+  .card { padding: 18px 14px; border-radius: 12px; }
+  .card-title { font-size: 0.92rem; margin-bottom: 16px; }
+
+  /* Option grid — full width on mobile */
+  .option-grid { grid-template-columns: 1fr; gap: 10px; }
+  .option-card { padding: 16px 14px; }
+
+  /* Slot buttons — bigger tap targets */
+  .slot-btn { padding: 11px 14px; font-size: 0.85rem; }
+
+  /* Buttons */
+  .btn { font-size: 0.9rem; padding: 12px 18px; }
+  .btn-sm { padding: 9px 14px; font-size: 0.82rem; }
+
+  /* Summary */
+  .summary-row { font-size: 0.85rem; }
+  .summary-row.total { font-size: 0.95rem; }
+
+  /* Admin tabs — wrap & full width */
+  .admin-tabs { gap: 4px; padding: 5px; }
+  .tab-btn { padding: 8px 10px; font-size: 0.78rem; flex: 1; min-width: 0; text-align: center; }
+  .tab-btn.tab-danger { margin-right: 0; }
+
+  /* Booking items — stack vertically */
+  .booking-item { flex-direction: column; }
+  .booking-actions { width: 100%; justify-content: flex-start; }
+
+  /* Stats */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-card .stat-value { font-size: 1.35rem; }
+
+  /* Schedule */
+  .schedule-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .time-range { min-width: 0; width: 100%; flex-wrap: wrap; }
+
+  /* Pricing table — horizontal scroll */
+  .pricing-table { font-size: 0.8rem; }
+  .pricing-table th, .pricing-table td { padding: 9px 10px; }
+
+  /* Detail table */
+  .detail-table td { font-size: 0.82rem; padding: 8px 10px; }
+  .detail-table td:first-child { width: 44%; }
+
+  /* Bitt panel */
+  .bitt-panel { padding: 16px 14px; }
+  .bitt-details-table { padding: 12px 14px; }
+  .bitt-details-table table { font-size: 0.82rem; }
+
+  /* Filter bar */
+  .filter-bar input, .filter-bar select { min-width: 100%; }
 }
 
 /* ── Print ───────────────────────────────────── */

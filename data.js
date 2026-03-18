@@ -4,21 +4,21 @@
    ============================================= */
 
 const CONFIG = {
-  businessName: "שטיפת רכב של ריי",
+  businessName: "שטיפת רכב של רעי",
   ownerEmail: "reis.carwash@gmail.com",
 
-  // Bitt / DCash settings
-  bittWalletId: "1868-555-0000",
-  bittAccountName: "שטיפת רכב של ריי",
+  // Bit (ביט) / העברה בנקאית
+  bittWalletId: "050-000-0000",
+  bittAccountName: "שטיפת רכב של רעי",
 
-  currency: "$",
-  currencyCode: "XCD",
+  currency: "₪",
+  currencyCode: "ILS",
 
   bookingWindowDays: 30,
 
   confirmationMessage:
-    "תודה שהזמנת אצל שטיפת רכב של ריי! " +
-    "אנא השלם את התשלום דרך Bitt / DCash כדי לאשר את התור שלך. " +
+    "תודה שהזמנת אצל שטיפת רכב של רעי! " +
+    "אנא השלם את התשלום דרך אפליקציית ביט כדי לאשר את התור שלך. " +
     "נתראה בקרוב!"
 };
 
@@ -184,8 +184,8 @@ const Utils = {
       `רכב:    ${car.name} (${car.description})\n` +
       `שירות:  ${service.name}\n` +
       `סכום:   ${CONFIG.currency}${price} ${CONFIG.currencyCode}\n\n` +
-      `תשלום באמצעות Bitt / DCash:\n` +
-      `1. פתח את אפליקציית DCash\n` +
+      `תשלום באמצעות ביט:\n` +
+      `1. פתח את אפליקציית ביט\n` +
       `2. לחץ על "שלח כסף"\n` +
       `3. חפש: ${CONFIG.bittWalletId}\n` +
       `4. הכנס סכום: ${CONFIG.currency}${price}\n` +
