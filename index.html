@@ -109,22 +109,31 @@
 
       <div id="paymentSection">
         <div class="alert alert-info">
-          💳 Pay securely via PayPal. No account needed — you can also pay with a debit or credit card on the PayPal page.
+          📱 Pay via <strong>Bitt / DCash</strong>. Open your DCash app, send to the wallet ID below, then click confirm.
         </div>
 
-        <a id="paypalBtn" href="#" target="_blank" class="btn btn-paypal">
-          <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
-               alt="PayPal" width="24" style="border-radius:4px" onerror="this.style.display='none'" />
-          Pay with PayPal
-        </a>
+        <!-- Bitt inline summary -->
+        <div style="border:2px solid #1a73e8;border-radius:10px;padding:16px;margin-bottom:12px;background:#f0f7ff">
+          <div style="font-weight:700;color:#1a73e8;margin-bottom:10px">Bitt / DCash Payment Details</div>
+          <table style="width:100%;font-size:0.93rem;border-collapse:collapse">
+            <tr><td style="color:#777;padding:4px 8px">Send to</td>
+                <td style="font-weight:700;padding:4px 8px" id="s5BittId"></td></tr>
+            <tr style="background:#e8f0fe"><td style="color:#777;padding:4px 8px">Account name</td>
+                <td style="font-weight:700;padding:4px 8px" id="s5BittName"></td></tr>
+            <tr><td style="color:#777;padding:4px 8px">Amount</td>
+                <td style="font-weight:700;color:#1a73e8;padding:4px 8px;font-size:1.05rem" id="s5BittAmt"></td></tr>
+            <tr style="background:#e8f0fe"><td style="color:#777;padding:4px 8px">Note / Ref</td>
+                <td style="font-weight:700;padding:4px 8px" id="s5BittRef">Will show after booking</td></tr>
+          </table>
+        </div>
 
-        <button class="btn btn-primary" id="confirmBtn" style="margin-top:12px">
-          ✅ I've paid — Confirm my booking
+        <button class="btn btn-primary" id="confirmBtn">
+          ✅ I've sent the payment — Confirm my booking
         </button>
       </div>
 
       <div id="alreadyPaidNotice" style="display:none" class="alert alert-warning">
-        ℹ️ Click <strong>"Confirm my booking"</strong> after completing your PayPal payment.
+        ℹ️ Click <strong>"Confirm my booking"</strong> after sending your DCash payment.
       </div>
     </div>
     <div style="text-align:right">
@@ -302,8 +311,9 @@ function renderSummary() {
     <div class="summary-row total"><span>Total due</span><span>${CONFIG.currency}${price}</span></div>
   `;
 
-  const paypalUrl = Utils.paypalLink(price, `${service.name} – ${CONFIG.businessName}`);
-  document.getElementById("paypalBtn").href = paypalUrl;
+  document.getElementById("s5BittId").textContent   = CONFIG.bittWalletId;
+  document.getElementById("s5BittName").textContent = CONFIG.bittAccountName;
+  document.getElementById("s5BittAmt").textContent  = CONFIG.currency + price + " " + CONFIG.currencyCode;
 }
 
 // ── Step navigation ───────────────────────────

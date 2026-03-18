@@ -120,9 +120,13 @@
           <input type="email" id="settingEmail" />
         </div>
         <div class="form-group">
-          <label>PayPal.me username</label>
-          <input type="text" id="settingPaypal" placeholder="e.g. ReisCarWash" />
-          <small style="color:#888">Customers will pay to paypal.me/<em>YourUsername</em></small>
+          <label>Bitt / DCash wallet ID (phone number)</label>
+          <input type="text" id="settingBittId" placeholder="e.g. 1868-555-0000" />
+          <small style="color:#888">This is the number customers send DCash to</small>
+        </div>
+        <div class="form-group">
+          <label>Bitt account name (shown to customers)</label>
+          <input type="text" id="settingBittName" placeholder="e.g. Rei's Car Wash" />
         </div>
         <div class="form-group">
           <label>Booking window (days ahead)</label>
@@ -431,18 +435,20 @@ function savePricing() {
 function loadSettings() {
   const saved = localStorage.getItem("rcw_settings");
   const s = saved ? JSON.parse(saved) : CONFIG;
-  document.getElementById("settingName").value    = s.businessName || CONFIG.businessName;
-  document.getElementById("settingEmail").value   = s.ownerEmail   || CONFIG.ownerEmail;
-  document.getElementById("settingPaypal").value  = s.paypalUsername|| CONFIG.paypalUsername;
-  document.getElementById("settingWindow").value  = s.bookingWindowDays || CONFIG.bookingWindowDays;
-  document.getElementById("settingMsg").value     = s.confirmationMessage || CONFIG.confirmationMessage;
+  document.getElementById("settingName").value     = s.businessName    || CONFIG.businessName;
+  document.getElementById("settingEmail").value    = s.ownerEmail      || CONFIG.ownerEmail;
+  document.getElementById("settingBittId").value   = s.bittWalletId    || CONFIG.bittWalletId;
+  document.getElementById("settingBittName").value = s.bittAccountName || CONFIG.bittAccountName;
+  document.getElementById("settingWindow").value   = s.bookingWindowDays || CONFIG.bookingWindowDays;
+  document.getElementById("settingMsg").value      = s.confirmationMessage || CONFIG.confirmationMessage;
 }
 
 function saveSettings() {
   const s = {
     businessName:        document.getElementById("settingName").value.trim(),
     ownerEmail:          document.getElementById("settingEmail").value.trim(),
-    paypalUsername:      document.getElementById("settingPaypal").value.trim(),
+    bittWalletId:        document.getElementById("settingBittId").value.trim(),
+    bittAccountName:     document.getElementById("settingBittName").value.trim(),
     bookingWindowDays:   parseInt(document.getElementById("settingWindow").value),
     confirmationMessage: document.getElementById("settingMsg").value.trim()
   };

@@ -6,9 +6,13 @@
 const CONFIG = {
   businessName: "Rei's Car Wash",
   ownerEmail: "reis.carwash@gmail.com",      // ← change to your email
-  paypalUsername: "ReisCarWash",             // ← your PayPal.me username
+
+  // ── Bitt / DCash settings ──────────────────
+  bittWalletId: "1868-555-0000",             // ← your Bitt/DCash phone number or wallet ID
+  bittAccountName: "Rei's Car Wash",         // ← name shown on the payment screen
+
   currency: "$",
-  currencyCode: "USD",
+  currencyCode: "XCD",                       // Eastern Caribbean Dollar (change if needed)
 
   // How far ahead customers can book (days)
   bookingWindowDays: 30,
@@ -16,7 +20,7 @@ const CONFIG = {
   // Confirmation message shown after booking
   confirmationMessage:
     "Thank you for booking with Rei's Car Wash! " +
-    "Please complete your payment via the PayPal link below to confirm your appointment. " +
+    "Please complete your Bitt / DCash payment to confirm your appointment. " +
     "We'll see you soon!"
 };
 
@@ -178,13 +182,7 @@ const Utils = {
     return slots;
   },
 
-  // Generate a PayPal.me payment link
-  paypalLink(amount, description) {
-    const desc = encodeURIComponent(description);
-    return `https://www.paypal.com/paypalme/${CONFIG.paypalUsername}/${amount}`;
-  },
-
-  // Generate a mailto confirmation link
+  // Generate a mailto confirmation link (Bitt / DCash payment instructions)
   mailtoLink(booking) {
     const service = SERVICES.find(s => s.id === booking.serviceId);
     const car     = CAR_TYPES.find(c => c.id === booking.carTypeId);
@@ -198,9 +196,14 @@ const Utils = {
       `⏰ Time:    ${Utils.formatTime(booking.time)}\n` +
       `🚗 Car:     ${car.name} (${car.description})\n` +
       `🧼 Service: ${service.name}\n` +
-      `💰 Amount:  ${CONFIG.currency}${price}\n\n` +
-      `Please pay via PayPal:\n` +
-      `${Utils.paypalLink(price, service.name + " – " + CONFIG.businessName)}\n\n` +
+      `💰 Amount:  ${CONFIG.currency}${price} ${CONFIG.currencyCode}\n\n` +
+      `HOW TO PAY (Bitt / DCash):\n` +
+      `1. Open your DCash app\n` +
+      `2. Tap "Send Money"\n` +
+      `3. Search for: ${CONFIG.bittWalletId}\n` +
+      `4. Enter amount: ${CONFIG.currency}${price}\n` +
+      `5. Add note: Booking #${booking.id}\n` +
+      `6. Confirm the payment\n\n` +
       `${CONFIG.confirmationMessage}\n\n` +
       `– The ${CONFIG.businessName} team`
     );
