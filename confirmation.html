@@ -100,7 +100,6 @@
   <p>שטיפת רכב של רעי &copy; 2024 &nbsp;|&nbsp; כל הזכויות שמורות</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="data.js"></script>
 <script>
 const booking = JSON.parse(localStorage.getItem("rcw_last_booking") || "{}");
@@ -123,7 +122,7 @@ if (!booking.id) {
     ["סוג רכב",      carType.name + " - " + carType.description],
     ["שירות",        service.name],
     ["משך",          service.duration + " דקות"],
-    ["סכום לתשלום", CONFIG.currency + price + " " + CONFIG.currencyCode],
+    ["סכום לתשלום", CONFIG.currency + price],
     ["סטטוס",        "ממתין לתשלום"]
   ];
 
@@ -132,30 +131,33 @@ if (!booking.id) {
   document.getElementById("detailTable").innerHTML =
     rows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
 
-  // Bitt panel
+  // Bit panel
   const ref = "הזמנה מספר " + booking.id;
   document.getElementById("bittWalletDisplay").textContent = CONFIG.bittWalletId;
   document.getElementById("bittNameDisplay").textContent   = CONFIG.bittAccountName;
-  document.getElementById("bittAmountDisplay").textContent =
-    CONFIG.currency + price + " " + CONFIG.currencyCode;
-  document.getElementById("bittRefDisplay").textContent = ref;
+  document.getElementById("bittAmountDisplay").textContent = CONFIG.currency + price;
+  document.getElementById("bittRefDisplay").textContent    = ref;
 
-  const qrText =
-    "BIT PAYMENT\n" +
-    "To: " + CONFIG.bittWalletId + "\n" +
-    "Name: " + CONFIG.bittAccountName + "\n" +
-    "Amount: " + CONFIG.currency + price + "\n" +
-    "Ref: " + ref;
+  // QR code via free API — no JS library needed
+  const qrText = [
+    "ביט תשלום",
+    "אל: " + CONFIG.bittWalletId,
+    "שם: " + CONFIG.bittAccountName,
+    "סכום: " + CONFIG.currency + price,
+    "אסמכתא: " + ref
+  ].join("\n");
 
-  new QRCode(document.getElementById("qrcode"), {
-    text: qrText,
-    width: 160,
-    height: 160,
-    colorDark: "#065f46",
-    colorLight: "#f0fdf4"
-  });
+  document.getElementById("qrcode").innerHTML =
+    `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&bgcolor=f0fdf4&color=065f46&qzone=1&data=${encodeURIComponent(qrText)}"
+          width="180" height="180" style="border-radius:10px;display:block;margin:0 auto 8px"
+          alt="QR ביט" />`;
 
-  document.getElementById("emailLink").href = Utils.mailtoLink(booking);
+  // Email button
+  const mailto = Utils.mailtoLink(booking);
+  document.getElementById("emailLink").href = mailto;
+
+  // Auto-open email client so customer gets the details immediately
+  setTimeout(() => { window.location.href = mailto; }, 800);
 }
 </script>
 
