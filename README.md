@@ -22,10 +22,11 @@ No server, no database, no paid APIs required.
 
 ## How to customise
 
-### Change your PayPal username
+### Change your Bitt / DCash wallet ID
 Open `data.js` and change:
 ```js
-paypalUsername: "ReisCarWash",   // ← your real PayPal.me username
+bittWalletId:   "1868-555-0000",   // ← your DCash phone number / wallet ID
+bittAccountName: "Rei's Car Wash", // ← name displayed to customers
 ```
 
 ### Change prices
@@ -42,10 +43,11 @@ const ADMIN_PASSWORD = "reis2024";
 
 ## Payment (Free — no API needed)
 
-Customers are redirected to your **PayPal.me** link with the exact amount pre-filled.
-- No PayPal developer account required
-- Customers can pay with card even without a PayPal account
-- You get notified by PayPal when payment arrives
+Customers pay via **Bitt / DCash** (the Eastern Caribbean digital currency).
+- No developer account or API key needed
+- Customers see your wallet ID + a QR code they scan with the DCash app
+- Payment note includes the Booking ID so you can match payments easily
+- You get notified by DCash when money arrives
 
 ## Confirmations
 

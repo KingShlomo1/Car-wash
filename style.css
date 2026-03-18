@@ -274,8 +274,8 @@ textarea {
   background: #1558b0;
 }
 
-.btn-paypal {
-  background: #003087;
+.btn-bitt {
+  background: #00843d;   /* Bitt brand green */
   color: white;
   width: 100%;
   margin-top: 10px;
@@ -285,8 +285,8 @@ textarea {
   gap: 10px;
 }
 
-.btn-paypal:hover {
-  background: #00206b;
+.btn-bitt:hover {
+  background: #005c2b;
 }
 
 .btn-secondary {
