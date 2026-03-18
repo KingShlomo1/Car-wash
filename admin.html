@@ -45,9 +45,6 @@
       <input type="password" id="adminPass" placeholder="הכנס סיסמה" />
     </div>
     <button class="btn btn-primary" onclick="adminLogin()">כניסה</button>
-    <p style="margin-top:12px;font-size:0.8rem;color:#94a3b8">
-      סיסמת ברירת מחדל: <code>fn8n4ywhh</code> — שנה אותה בקוד של admin.html
-    </p>
   </div>
 
   <!-- Admin content -->
@@ -147,7 +144,7 @@
           <small>זה המספר שאליו הלקוחות ישלחו ביט</small>
         </div>
         <div class="form-group">
-          <label>שם חשבון Bitt (מוצג ללקוחות)</label>
+          <label>שם החשבון (מוצג ללקוחות)</label>
           <input type="text" id="settingBittName" placeholder="לדוגמה: שטיפת רכב של רעי" />
         </div>
         <div class="form-group">
@@ -192,7 +189,7 @@
 <script src="data.js"></script>
 <script>
 /* ============================================
-   Admin panel — Hebrew / Bitt version
+   Admin panel — Hebrew
    ============================================ */
 
 const ADMIN_PASSWORD = "fn8n4ywhh"; // ← שנה כאן
@@ -282,14 +279,22 @@ function renderBookings() {
           </div>
         </div>
         <div class="booking-actions">
-          ${b.status === "pending" ? `<button class="btn btn-success btn-sm" onclick="changeStatus('${b.id}','confirmed')">אשר</button>` : ""}
+          ${b.status === "pending" ? `<button class="btn btn-success btn-sm" onclick="confirmAndEmail('${b.id}')">אשר + שלח מייל</button>` : ""}
           ${b.status !== "cancelled" ? `<button class="btn btn-danger btn-sm" onclick="changeStatus('${b.id}','cancelled')">בטל</button>` : ""}
           <button class="btn btn-secondary btn-sm" onclick="deleteBookingAdmin('${b.id}')">מחק</button>
-          <a class="btn btn-secondary btn-sm" href="${Utils.mailtoLink(b)}">אימייל</a>
+          <a class="btn btn-secondary btn-sm" href="${Utils.mailtoLink(b)}" target="_blank">שלח מייל</a>
         </div>
       </div>
     `;
   }).join("");
+}
+
+function confirmAndEmail(id) {
+  Storage.updateBookingStatus(id, "confirmed");
+  const b = Storage.getBookings().find(bk => bk.id === id);
+  if (b) window.open(Utils.mailtoLink(b), "_blank");
+  renderBookings();
+  renderStats();
 }
 
 function changeStatus(id, status) {
