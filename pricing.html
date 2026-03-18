@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing – Rei's Car Wash</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>🚗 Rei's Car Wash</h1>
+  <p>Transparent pricing — no surprises</p>
+  <nav>
+    <a href="index.html">Book Now</a>
+    <a href="pricing.html" class="active">Pricing</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Service Prices</h2>
+    <table class="pricing-table" id="pricingTable"></table>
+  </div>
+
+  <div class="card">
+    <h2>Service Details</h2>
+    <div id="serviceDetails"></div>
+  </div>
+
+  <div class="card">
+    <h2>Opening Hours</h2>
+    <div id="openingHours"></div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:32px">
+    <a href="index.html" class="btn btn-primary" style="width:auto;padding:12px 40px">
+      Book an appointment →
+    </a>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+// ── Pricing table ─────────────────────────────
+(function renderPricing() {
+  const carTypeHeaders = CAR_TYPES.map(c => `<th>${c.icon} ${c.name}<br><small>${c.description}</small></th>`).join("");
+  const header = `<thead><tr><th>Service</th>${carTypeHeaders}<th>Duration</th></tr></thead>`;
+
+  const rows = SERVICES.map(s => {
+    const prices = CAR_TYPES.map(c =>
+      `<td style="font-weight:700;color:#1a73e8">${CONFIG.currency}${s.prices[c.id]}</td>`
+    ).join("");
+    return `<tr>
+      <td><strong>${s.icon} ${s.name}</strong><br><small style="color:#777">${s.description}</small></td>
+      ${prices}
+      <td>${s.duration} min</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("pricingTable").innerHTML = header + `<tbody>${rows}</tbody>`;
+})();
+
+// ── Service detail cards ──────────────────────
+(function renderServiceDetails() {
+  document.getElementById("serviceDetails").innerHTML = SERVICES.map(s => `
+    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #eee">
+      <span style="font-size:2.2rem">${s.icon}</span>
+      <div>
+        <strong style="font-size:1.05rem">${s.name}</strong>
+        <p style="color:#555;margin:4px 0">${s.description}</p>
+        <span style="font-size:0.85rem;color:#888">⏱ ${s.duration} minutes per session</span>
+      </div>
+    </div>
+  `).join("");
+})();
+
+// ── Opening hours ─────────────────────────────
+(function renderHours() {
+  const schedule = Storage.getSchedule();
+  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+  const dayLabels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+  document.getElementById("openingHours").innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:0.95rem">
+      ${days.map((d, i) => {
+        const s = schedule[d];
+        return `<tr>
+          <td style="padding:8px 12px;font-weight:600;color:#444">${dayLabels[i]}</td>
+          <td style="padding:8px 12px;color:${s.open ? '#2e7d32' : '#c62828'}">
+            ${s.open
+              ? `${Utils.formatTime(s.start)} – ${Utils.formatTime(s.end)}`
+              : "Closed"}
+          </td>
+        </tr>`;
+      }).join("")}
+    </table>
+  `;
+})();
+</script>
+
+</body>
+</html>

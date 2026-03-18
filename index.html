@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Wash – Rei's Car Wash</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>🚗 Rei's Car Wash</h1>
+  <p>Book your appointment in seconds</p>
+  <nav>
+    <a href="index.html" class="active">Book Now</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- Step tracker -->
+  <div id="stepTracker" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    <div class="step-indicator active" data-step="1">1. Car Type</div>
+    <div class="step-indicator" data-step="2">2. Service</div>
+    <div class="step-indicator" data-step="3">3. Date &amp; Time</div>
+    <div class="step-indicator" data-step="4">4. Your Details</div>
+    <div class="step-indicator" data-step="5">5. Confirm &amp; Pay</div>
+  </div>
+
+  <!-- ── Step 1: Car Type ───────────────────── -->
+  <div id="step1" class="step-panel">
+    <div class="card">
+      <h2>Step 1 — Select your car type</h2>
+      <div class="option-grid" id="carTypeGrid"></div>
+    </div>
+  </div>
+
+  <!-- ── Step 2: Service ────────────────────── -->
+  <div id="step2" class="step-panel" style="display:none">
+    <div class="card">
+      <h2>Step 2 — Choose a service</h2>
+      <div class="option-grid" id="serviceGrid"></div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(1)">← Back</button>
+    </div>
+  </div>
+
+  <!-- ── Step 3: Date & Time ────────────────── -->
+  <div id="step3" class="step-panel" style="display:none">
+    <div class="card">
+      <h2>Step 3 — Pick a date &amp; time</h2>
+
+      <div class="form-group">
+        <label for="dateInput">Select a date</label>
+        <input type="date" id="dateInput" />
+      </div>
+
+      <div class="form-group">
+        <label>Available time slots</label>
+        <div id="slotGrid" class="slot-grid">
+          <p style="color:#888;font-size:0.9rem">Choose a date to see available slots.</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(2)">← Back</button>
+    </div>
+  </div>
+
+  <!-- ── Step 4: Customer Details ───────────── -->
+  <div id="step4" class="step-panel" style="display:none">
+    <div class="card">
+      <h2>Step 4 — Your details</h2>
+
+      <div class="form-group">
+        <label for="custName">Full name *</label>
+        <input type="text" id="custName" placeholder="Jane Smith" />
+      </div>
+
+      <div class="form-group">
+        <label for="custEmail">Email address *</label>
+        <input type="email" id="custEmail" placeholder="jane@email.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="custPhone">Phone number (optional)</label>
+        <input type="tel" id="custPhone" placeholder="+1 555 000 0000" />
+      </div>
+
+      <div class="form-group">
+        <label for="custNotes">Special requests (optional)</label>
+        <textarea id="custNotes" placeholder="e.g. extra dirty, needs pet hair removal…"></textarea>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(3)">← Back</button>
+    </div>
+  </div>
+
+  <!-- ── Step 5: Summary & Pay ─────────────── -->
+  <div id="step5" class="step-panel" style="display:none">
+    <div class="card">
+      <h2>Step 5 — Review &amp; pay</h2>
+
+      <div class="summary-box" id="bookingSummary"></div>
+
+      <div id="paymentSection">
+        <div class="alert alert-info">
+          💳 Pay securely via PayPal. No account needed — you can also pay with a debit or credit card on the PayPal page.
+        </div>
+
+        <a id="paypalBtn" href="#" target="_blank" class="btn btn-paypal">
+          <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+               alt="PayPal" width="24" style="border-radius:4px" onerror="this.style.display='none'" />
+          Pay with PayPal
+        </a>
+
+        <button class="btn btn-primary" id="confirmBtn" style="margin-top:12px">
+          ✅ I've paid — Confirm my booking
+        </button>
+      </div>
+
+      <div id="alreadyPaidNotice" style="display:none" class="alert alert-warning">
+        ℹ️ Click <strong>"Confirm my booking"</strong> after completing your PayPal payment.
+      </div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(4)">← Back</button>
+    </div>
+  </div>
+
+</div><!-- /.container -->
+
+<script src="data.js"></script>
+<script>
+/* ==========================================
+   Booking page logic
+   ========================================== */
+
+let booking = {
+  carTypeId: null,
+  serviceId: null,
+  date: null,
+  time: null,
+  customerName: null,
+  customerEmail: null,
+  customerPhone: null,
+  customerNotes: null
+};
+
+let currentStep = 1;
+
+// ── Step tracker styling ─────────────────────
+(function injectStepStyles() {
+  const s = document.createElement("style");
+  s.textContent = `
+    .step-indicator {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: #e8eaed;
+      color: #888;
+      white-space: nowrap;
+    }
+    .step-indicator.active {
+      background: #1a73e8;
+      color: white;
+    }
+    .step-indicator.done {
+      background: #43a047;
+      color: white;
+    }
+  `;
+  document.head.appendChild(s);
+})();
+
+// ── Car type grid ─────────────────────────────
+function renderCarTypes() {
+  const grid = document.getElementById("carTypeGrid");
+  grid.innerHTML = CAR_TYPES.map(ct => `
+    <label class="option-card" id="ct-${ct.id}" onclick="selectCarType('${ct.id}')">
+      <span class="icon">${ct.icon}</span>
+      <span class="name">${ct.name}</span>
+      <span class="duration">${ct.description}</span>
+    </label>
+  `).join("");
+}
+
+function selectCarType(id) {
+  booking.carTypeId = id;
+  document.querySelectorAll("#carTypeGrid .option-card").forEach(el => el.classList.remove("selected"));
+  document.getElementById("ct-" + id).classList.add("selected");
+  setTimeout(() => goToStep(2), 300);
+}
+
+// ── Service grid ──────────────────────────────
+function renderServices() {
+  const grid = document.getElementById("serviceGrid");
+  grid.innerHTML = SERVICES.map(s => {
+    const price = booking.carTypeId ? s.prices[booking.carTypeId] : "–";
+    return `
+      <label class="option-card" id="svc-${s.id}" onclick="selectService('${s.id}')">
+        <span class="icon">${s.icon}</span>
+        <span class="name">${s.name}</span>
+        <span class="price">${CONFIG.currency}${price}</span>
+        <span class="duration">⏱ ${s.duration} min · ${s.description}</span>
+      </label>
+    `;
+  }).join("");
+}
+
+function selectService(id) {
+  booking.serviceId = id;
+  document.querySelectorAll("#serviceGrid .option-card").forEach(el => el.classList.remove("selected"));
+  document.getElementById("svc-" + id).classList.add("selected");
+  setTimeout(() => goToStep(3), 300);
+}
+
+// ── Date & slot selection ─────────────────────
+function initDatePicker() {
+  const input = document.getElementById("dateInput");
+  const today = new Date();
+  const max   = new Date(today);
+  max.setDate(max.getDate() + CONFIG.bookingWindowDays);
+
+  input.min = today.toISOString().split("T")[0];
+  input.max = max.toISOString().split("T")[0];
+  input.value = "";
+
+  input.addEventListener("change", () => {
+    booking.date = input.value;
+    booking.time = null;
+    renderSlots();
+  });
+}
+
+function renderSlots() {
+  const grid = document.getElementById("slotGrid");
+  if (!booking.date) { grid.innerHTML = "<p>Choose a date above.</p>"; return; }
+
+  const dayName = Utils.getDayName(booking.date);
+  const schedule = Storage.getSchedule();
+  const daySched = schedule[dayName];
+
+  if (!daySched || !daySched.open) {
+    grid.innerHTML = `<div class="alert alert-warning">Sorry, we are closed on ${dayName.charAt(0).toUpperCase()+dayName.slice(1)}s.</div>`;
+    return;
+  }
+
+  const service = SERVICES.find(s => s.id === booking.serviceId);
+  const allBookings = Storage.getBookings().filter(b => b.date === booking.date && b.status !== "cancelled");
+
+  // Convert existing bookings to {startMins, duration}
+  const bookedSlots = allBookings.map(b => {
+    const svc = SERVICES.find(s => s.id === b.serviceId);
+    const [h, m] = b.time.split(":").map(Number);
+    return { startMins: h * 60 + m, duration: svc ? svc.duration : 60 };
+  });
+
+  const slots = Utils.generateSlots(daySched, bookedSlots, service.duration);
+
+  if (slots.length === 0) {
+    grid.innerHTML = `<div class="alert alert-warning">No available slots on this day for a ${service.name} (${service.duration} min). Try another day.</div>`;
+    return;
+  }
+
+  grid.innerHTML = slots.map(slot => `
+    <button class="slot-btn ${slot.booked ? "booked" : ""} ${booking.time === slot.time ? "selected" : ""}"
+            onclick="${slot.booked ? "" : `selectSlot('${slot.time}')`}"
+            ${slot.booked ? "disabled" : ""}>
+      ${Utils.formatTime(slot.time)}${slot.booked ? "<br><small>Booked</small>" : ""}
+    </button>
+  `).join("");
+}
+
+function selectSlot(time) {
+  booking.time = time;
+  document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+  event.target.closest(".slot-btn").classList.add("selected");
+  setTimeout(() => goToStep(4), 300);
+}
+
+// ── Summary ───────────────────────────────────
+function renderSummary() {
+  const service  = SERVICES.find(s => s.id === booking.serviceId);
+  const carType  = CAR_TYPES.find(c => c.id === booking.carTypeId);
+  const price    = service.prices[booking.carTypeId];
+
+  document.getElementById("bookingSummary").innerHTML = `
+    <h3>📋 Booking Summary</h3>
+    <div class="summary-row"><span>Name</span><span>${booking.customerName}</span></div>
+    <div class="summary-row"><span>Email</span><span>${booking.customerEmail}</span></div>
+    <div class="summary-row"><span>Date</span><span>${Utils.formatDate(booking.date)}</span></div>
+    <div class="summary-row"><span>Time</span><span>${Utils.formatTime(booking.time)}</span></div>
+    <div class="summary-row"><span>Car type</span><span>${carType.icon} ${carType.name}</span></div>
+    <div class="summary-row"><span>Service</span><span>${service.icon} ${service.name}</span></div>
+    <div class="summary-row"><span>Duration</span><span>${service.duration} min</span></div>
+    <div class="summary-row total"><span>Total due</span><span>${CONFIG.currency}${price}</span></div>
+  `;
+
+  const paypalUrl = Utils.paypalLink(price, `${service.name} – ${CONFIG.businessName}`);
+  document.getElementById("paypalBtn").href = paypalUrl;
+}
+
+// ── Step navigation ───────────────────────────
+function goToStep(n) {
+  // Validate before advancing
+  if (n > currentStep) {
+    if (!validateStep(currentStep)) return;
+  }
+
+  document.querySelectorAll(".step-panel").forEach((el, i) => {
+    el.style.display = (i + 1 === n) ? "block" : "none";
+  });
+
+  document.querySelectorAll(".step-indicator").forEach((el, i) => {
+    el.classList.remove("active", "done");
+    if (i + 1 === n)  el.classList.add("active");
+    if (i + 1 < n)   el.classList.add("done");
+  });
+
+  currentStep = n;
+
+  if (n === 2) renderServices();
+  if (n === 3) initDatePicker();
+  if (n === 5) renderSummary();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function validateStep(n) {
+  if (n === 1 && !booking.carTypeId) {
+    alert("Please select a car type."); return false;
+  }
+  if (n === 2 && !booking.serviceId) {
+    alert("Please choose a service."); return false;
+  }
+  if (n === 3) {
+    if (!booking.date) { alert("Please pick a date."); return false; }
+    if (!booking.time) { alert("Please select a time slot."); return false; }
+  }
+  if (n === 4) {
+    const name  = document.getElementById("custName").value.trim();
+    const email = document.getElementById("custEmail").value.trim();
+    if (!name)  { alert("Please enter your name."); return false; }
+    if (!email || !email.includes("@")) { alert("Please enter a valid email."); return false; }
+    booking.customerName  = name;
+    booking.customerEmail = email;
+    booking.customerPhone = document.getElementById("custPhone").value.trim();
+    booking.customerNotes = document.getElementById("custNotes").value.trim();
+  }
+  return true;
+}
+
+// ── Confirm booking ───────────────────────────
+document.getElementById("confirmBtn").addEventListener("click", () => {
+  const saved = Storage.addBooking({ ...booking });
+
+  // Redirect to confirmation page
+  localStorage.setItem("rcw_last_booking", JSON.stringify(saved));
+  window.location.href = "confirmation.html";
+});
+
+// ── Init ──────────────────────────────────────
+renderCarTypes();
+</script>
+
+</body>
+</html>

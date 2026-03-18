@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Confirmed – Rei's Car Wash</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>🚗 Rei's Car Wash</h1>
+  <p>Booking Confirmation</p>
+  <nav>
+    <a href="index.html">Book Now</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="card" id="confirmationCard">
+
+    <div class="confirmation-header">
+      <span class="check-icon">✅</span>
+      <h2>Booking Received!</h2>
+      <p>Here are your booking details. Please pay to secure your slot.</p>
+    </div>
+
+    <!-- Booking details table -->
+    <table class="detail-table" id="detailTable"></table>
+
+    <!-- Payment section -->
+    <div style="margin-top:24px">
+      <div class="alert alert-info">
+        💳 Your slot is <strong>reserved for 24 hours</strong>.
+        Complete your PayPal payment below to confirm it permanently.
+      </div>
+
+      <a id="paypalLink" href="#" target="_blank" class="btn btn-paypal"
+         style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:8px;background:#003087;color:white;text-decoration:none;font-weight:700;font-size:1rem;">
+        <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+             alt="PayPal" width="24" style="border-radius:4px" onerror="this.style.display='none'" />
+        Pay now with PayPal
+      </a>
+
+      <p style="text-align:center;color:#888;font-size:0.82rem;margin-top:8px">
+        No PayPal account needed — pay by card on the PayPal page
+      </p>
+    </div>
+
+    <!-- Email / print actions -->
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap" class="no-print">
+      <a id="emailLink" href="#" class="btn btn-secondary" style="flex:1;text-align:center">
+        📧 Email this to me
+      </a>
+      <button onclick="window.print()" class="btn btn-secondary" style="flex:1">
+        🖨️ Print / Save PDF
+      </button>
+    </div>
+
+    <div style="margin-top:20px" class="no-print">
+      <a href="index.html" class="btn btn-primary">Book another appointment</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const booking = JSON.parse(localStorage.getItem("rcw_last_booking") || "{}");
+
+if (!booking.id) {
+  document.getElementById("confirmationCard").innerHTML =
+    `<div class="alert alert-error">No booking found. <a href="index.html">Start a new booking</a>.</div>`;
+} else {
+  const service  = SERVICES.find(s => s.id === booking.serviceId);
+  const carType  = CAR_TYPES.find(c => c.id === booking.carTypeId);
+  const price    = service.prices[booking.carTypeId];
+
+  // Populate detail table
+  const rows = [
+    ["Booking ID",  "#" + booking.id],
+    ["Name",        booking.customerName],
+    ["Email",       booking.customerEmail],
+    ["Phone",       booking.customerPhone || "–"],
+    ["Date",        Utils.formatDate(booking.date)],
+    ["Time",        Utils.formatTime(booking.time)],
+    ["Car type",    carType.icon + " " + carType.name + " (" + carType.description + ")"],
+    ["Service",     service.icon + " " + service.name],
+    ["Duration",    service.duration + " minutes"],
+    ["Amount due",  CONFIG.currency + price],
+    ["Status",      "⏳ Awaiting payment"]
+  ];
+
+  if (booking.customerNotes) {
+    rows.push(["Notes", booking.customerNotes]);
+  }
+
+  document.getElementById("detailTable").innerHTML = rows.map(([k, v]) =>
+    `<tr><td>${k}</td><td>${v}</td></tr>`
+  ).join("");
+
+  // PayPal link
+  document.getElementById("paypalLink").href = Utils.paypalLink(price, service.name + " – " + CONFIG.businessName);
+
+  // Email mailto link
+  document.getElementById("emailLink").href = Utils.mailtoLink(booking);
+}
+</script>
+
+</body>
+</html>

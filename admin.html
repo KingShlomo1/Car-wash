@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Rei's Car Wash</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>🚗 Rei's Car Wash</h1>
+  <p>Admin Panel</p>
+  <nav>
+    <a href="index.html">Book Now</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="admin.html" class="active">Admin</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- ── Password gate ─────────────────────── -->
+  <div id="loginGate" class="card">
+    <h2>🔒 Admin Login</h2>
+    <p style="color:#555;margin-bottom:18px">Enter your admin password to access the panel.</p>
+    <div class="form-group">
+      <label for="adminPass">Password</label>
+      <input type="password" id="adminPass" placeholder="Enter password" />
+    </div>
+    <button class="btn btn-primary" onclick="adminLogin()">Log in</button>
+    <p style="margin-top:12px;font-size:0.82rem;color:#888">
+      Default password: <code>reis2024</code>
+      — change it in <code>admin.html</code> (search for ADMIN_PASSWORD).
+    </p>
+  </div>
+
+  <!-- ── Admin content (hidden until login) ─ -->
+  <div id="adminContent" style="display:none">
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="showTab('bookings')">📅 Bookings</button>
+      <button class="btn btn-secondary btn-sm" onclick="showTab('schedule')">🕐 Schedule</button>
+      <button class="btn btn-secondary btn-sm" onclick="showTab('pricing')">💰 Pricing</button>
+      <button class="btn btn-secondary btn-sm" onclick="showTab('settings')">⚙️ Settings</button>
+      <button class="btn btn-danger btn-sm" onclick="adminLogout()" style="margin-left:auto">Log out</button>
+    </div>
+
+    <!-- ── Bookings tab ──────────────────── -->
+    <div id="tab-bookings" class="tab-panel">
+
+      <div class="card">
+        <h2>All Bookings</h2>
+
+        <!-- Filter bar -->
+        <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
+          <input type="date" id="filterDate" style="flex:1;min-width:140px"
+                 onchange="renderBookings()" placeholder="Filter by date" />
+          <select id="filterStatus" style="flex:1;min-width:120px" onchange="renderBookings()">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
+        </div>
+
+        <div id="bookingsList"></div>
+        <p id="noBookings" style="color:#888;text-align:center;display:none">No bookings found.</p>
+      </div>
+
+      <!-- Booking stats -->
+      <div class="card">
+        <h2>Quick Stats</h2>
+        <div id="statsPanel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px"></div>
+      </div>
+    </div>
+
+    <!-- ── Schedule tab ──────────────────── -->
+    <div id="tab-schedule" class="tab-panel" style="display:none">
+      <div class="card">
+        <h2>Weekly Schedule</h2>
+        <p style="color:#555;margin-bottom:18px">
+          Toggle days on/off and set your opening &amp; closing times. Changes save automatically.
+        </p>
+        <div id="scheduleEditor"></div>
+        <button class="btn btn-primary" style="margin-top:18px" onclick="saveSchedule()">
+          💾 Save Schedule
+        </button>
+        <div id="scheduleMsg" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- ── Pricing tab ───────────────────── -->
+    <div id="tab-pricing" class="tab-panel" style="display:none">
+      <div class="card">
+        <h2>Edit Prices &amp; Durations</h2>
+        <p style="color:#555;margin-bottom:18px">
+          Update prices and service durations. Changes take effect immediately.
+        </p>
+        <div id="pricingEditor"></div>
+        <button class="btn btn-primary" style="margin-top:18px" onclick="savePricing()">
+          💾 Save Prices
+        </button>
+        <div id="pricingMsg" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- ── Settings tab ─────────────────── -->
+    <div id="tab-settings" class="tab-panel" style="display:none">
+      <div class="card">
+        <h2>Business Settings</h2>
+        <div class="form-group">
+          <label>Business name</label>
+          <input type="text" id="settingName" />
+        </div>
+        <div class="form-group">
+          <label>Your email (for records)</label>
+          <input type="email" id="settingEmail" />
+        </div>
+        <div class="form-group">
+          <label>PayPal.me username</label>
+          <input type="text" id="settingPaypal" placeholder="e.g. ReisCarWash" />
+          <small style="color:#888">Customers will pay to paypal.me/<em>YourUsername</em></small>
+        </div>
+        <div class="form-group">
+          <label>Booking window (days ahead)</label>
+          <input type="number" id="settingWindow" min="1" max="90" />
+        </div>
+        <div class="form-group">
+          <label>Confirmation message</label>
+          <textarea id="settingMsg"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+        <div id="settingsMsg" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <h2>⚠️ Danger Zone</h2>
+        <p style="color:#555;margin-bottom:14px">These actions cannot be undone.</p>
+        <button class="btn btn-danger" onclick="clearAllBookings()">🗑️ Delete all bookings</button>
+        <button class="btn btn-danger" style="margin-left:10px" onclick="resetSchedule()">↩️ Reset schedule to default</button>
+      </div>
+    </div>
+
+  </div><!-- /#adminContent -->
+
+</div><!-- /.container -->
+
+<script src="data.js"></script>
+<script>
+/* ============================================
+   Admin panel logic
+   ============================================ */
+
+// ── Change this password ──────────────────────
+const ADMIN_PASSWORD = "reis2024";
+// ─────────────────────────────────────────────
+
+function adminLogin() {
+  const pass = document.getElementById("adminPass").value;
+  if (pass === ADMIN_PASSWORD) {
+    sessionStorage.setItem("rcw_admin", "1");
+    document.getElementById("loginGate").style.display = "none";
+    document.getElementById("adminContent").style.display = "block";
+    showTab("bookings");
+    loadSettings();
+  } else {
+    alert("Incorrect password. Try again.");
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem("rcw_admin");
+  location.reload();
+}
+
+// Auto-login if already authenticated this session
+if (sessionStorage.getItem("rcw_admin") === "1") {
+  document.getElementById("loginGate").style.display = "none";
+  document.getElementById("adminContent").style.display = "block";
+}
+
+// ── Tab switching ────────────────────────────
+function showTab(name) {
+  document.querySelectorAll(".tab-panel").forEach(el => el.style.display = "none");
+  document.getElementById("tab-" + name).style.display = "block";
+
+  if (name === "bookings")  { renderBookings(); renderStats(); }
+  if (name === "schedule")  renderScheduleEditor();
+  if (name === "pricing")   renderPricingEditor();
+  if (name === "settings")  loadSettings();
+}
+
+// ── Bookings ─────────────────────────────────
+function renderBookings() {
+  const filterDate   = document.getElementById("filterDate").value;
+  const filterStatus = document.getElementById("filterStatus").value;
+
+  let bookings = Storage.getBookings();
+  if (filterDate)   bookings = bookings.filter(b => b.date === filterDate);
+  if (filterStatus) bookings = bookings.filter(b => b.status === filterStatus);
+
+  // Sort newest first
+  bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const list = document.getElementById("bookingsList");
+  const none = document.getElementById("noBookings");
+
+  if (bookings.length === 0) {
+    list.innerHTML = "";
+    none.style.display = "block";
+    return;
+  }
+  none.style.display = "none";
+
+  list.innerHTML = bookings.map(b => {
+    const svc = SERVICES.find(s => s.id === b.serviceId);
+    const car = CAR_TYPES.find(c => c.id === b.carTypeId);
+    const price = svc && car ? svc.prices[car.id] : "?";
+    return `
+      <div class="booking-item">
+        <div class="booking-info">
+          <div class="name">${b.customerName} <span class="badge badge-${b.status}">${b.status}</span></div>
+          <div class="details">
+            📅 ${Utils.formatDate(b.date)} at ${Utils.formatTime(b.time)} &nbsp;|&nbsp;
+            ${car ? car.icon + " " + car.name : "?"} &nbsp;|&nbsp;
+            ${svc ? svc.icon + " " + svc.name : "?"} &nbsp;|&nbsp;
+            ${CONFIG.currency}${price}
+          </div>
+          <div class="details" style="margin-top:3px">
+            📧 ${b.customerEmail}
+            ${b.customerPhone ? " | 📞 " + b.customerPhone : ""}
+            ${b.customerNotes ? " | 📝 " + b.customerNotes : ""}
+          </div>
+        </div>
+        <div class="booking-actions">
+          ${b.status === "pending" ? `
+            <button class="btn btn-sm" style="background:#43a047;color:white"
+              onclick="changeStatus('${b.id}','confirmed')">✅ Confirm</button>
+          ` : ""}
+          ${b.status !== "cancelled" ? `
+            <button class="btn btn-danger btn-sm"
+              onclick="changeStatus('${b.id}','cancelled')">✗ Cancel</button>
+          ` : ""}
+          <button class="btn btn-secondary btn-sm"
+            onclick="deleteBookingAdmin('${b.id}')">🗑</button>
+          <a class="btn btn-secondary btn-sm" href="${Utils.mailtoLink(b)}" target="_blank">📧</a>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function changeStatus(id, status) {
+  Storage.updateBookingStatus(id, status);
+  renderBookings();
+  renderStats();
+}
+
+function deleteBookingAdmin(id) {
+  if (confirm("Delete this booking permanently?")) {
+    Storage.deleteBooking(id);
+    renderBookings();
+    renderStats();
+  }
+}
+
+function clearFilters() {
+  document.getElementById("filterDate").value = "";
+  document.getElementById("filterStatus").value = "";
+  renderBookings();
+}
+
+function clearAllBookings() {
+  if (confirm("Delete ALL bookings? This cannot be undone.")) {
+    Storage.saveBookings([]);
+    renderBookings();
+    renderStats();
+  }
+}
+
+// ── Stats ─────────────────────────────────────
+function renderStats() {
+  const all    = Storage.getBookings();
+  const today  = new Date().toISOString().split("T")[0];
+  const stats  = [
+    { label: "Total bookings", value: all.length, icon: "📋" },
+    { label: "Today",     value: all.filter(b => b.date === today).length, icon: "📅" },
+    { label: "Pending",   value: all.filter(b => b.status === "pending").length, icon: "⏳" },
+    { label: "Confirmed", value: all.filter(b => b.status === "confirmed").length, icon: "✅" },
+    { label: "Cancelled", value: all.filter(b => b.status === "cancelled").length, icon: "✗" },
+    {
+      label: "Est. Revenue",
+      icon: "💵",
+      value: CONFIG.currency + all
+        .filter(b => b.status !== "cancelled")
+        .reduce((sum, b) => {
+          const s = SERVICES.find(sv => sv.id === b.serviceId);
+          return sum + (s ? (s.prices[b.carTypeId] || 0) : 0);
+        }, 0)
+    }
+  ];
+
+  document.getElementById("statsPanel").innerHTML = stats.map(s => `
+    <div style="text-align:center;padding:14px;background:#f8f9fa;border-radius:8px">
+      <div style="font-size:1.6rem">${s.icon}</div>
+      <div style="font-size:1.4rem;font-weight:700;color:#1a73e8">${s.value}</div>
+      <div style="font-size:0.82rem;color:#666">${s.label}</div>
+    </div>
+  `).join("");
+}
+
+// ── Schedule editor ───────────────────────────
+function renderScheduleEditor() {
+  const schedule = Storage.getSchedule();
+  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+  const labels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+  document.getElementById("scheduleEditor").innerHTML = days.map((d, i) => {
+    const s = schedule[d];
+    return `
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:14px;border:1.5px solid ${s.open?"#1a73e8":"#d0d7de"};border-radius:10px;background:${s.open?"#e8f0fe":"#fafafa"}">
+        <label style="min-width:100px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="open-${d}" ${s.open ? "checked" : ""}
+                 onchange="toggleDay('${d}')" style="width:18px;height:18px" />
+          ${labels[i]}
+        </label>
+        <div class="time-range" style="${s.open?"":"opacity:0.4;pointer-events:none"}" id="times-${d}">
+          <input type="time" id="start-${d}" value="${s.start}" style="width:120px" />
+          <span>to</span>
+          <input type="time" id="end-${d}"   value="${s.end}"   style="width:120px" />
+          <span style="color:#888;font-size:0.85rem">
+            Slots every
+            <select id="step-${d}" style="width:70px">
+              ${[30,45,60,90,120].map(v => `<option value="${v}" ${s.slotStep==v?"selected":""}>${v}m</option>`).join("")}
+            </select>
+          </span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleDay(day) {
+  const isOpen = document.getElementById("open-" + day).checked;
+  const timesEl = document.getElementById("times-" + day);
+  const wrapper = timesEl.closest("div");
+  timesEl.style.opacity = isOpen ? "1" : "0.4";
+  timesEl.style.pointerEvents = isOpen ? "auto" : "none";
+  wrapper.style.background = isOpen ? "#e8f0fe" : "#fafafa";
+  wrapper.style.borderColor = isOpen ? "#1a73e8" : "#d0d7de";
+}
+
+function saveSchedule() {
+  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+  const schedule = {};
+  days.forEach(d => {
+    schedule[d] = {
+      open:     document.getElementById("open-" + d).checked,
+      start:    document.getElementById("start-" + d).value,
+      end:      document.getElementById("end-" + d).value,
+      slotStep: parseInt(document.getElementById("step-" + d).value)
+    };
+  });
+  Storage.saveSchedule(schedule);
+  document.getElementById("scheduleMsg").innerHTML =
+    `<div class="alert alert-success">✅ Schedule saved!</div>`;
+  setTimeout(() => document.getElementById("scheduleMsg").innerHTML = "", 3000);
+}
+
+function resetSchedule() {
+  if (confirm("Reset schedule to default?")) {
+    Storage.saveSchedule(JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)));
+    renderScheduleEditor();
+  }
+}
+
+// ── Pricing editor ────────────────────────────
+// Prices are stored in localStorage so they override data.js defaults
+function getPricing() {
+  const saved = localStorage.getItem("rcw_pricing");
+  return saved ? JSON.parse(saved) : null;
+}
+
+function savePricingData(data) {
+  localStorage.setItem("rcw_pricing", JSON.stringify(data));
+}
+
+function renderPricingEditor() {
+  const editor = document.getElementById("pricingEditor");
+  editor.innerHTML = SERVICES.map(s => `
+    <div style="margin-bottom:20px;padding:16px;border:1.5px solid #e0e0e0;border-radius:10px">
+      <div style="font-weight:700;font-size:1.05rem;margin-bottom:12px">${s.icon} ${s.name}</div>
+      <div class="form-group">
+        <label>Duration (minutes)</label>
+        <input type="number" id="dur-${s.id}" value="${s.duration}" min="5" max="300" />
+      </div>
+      ${CAR_TYPES.map(c => `
+        <div class="form-group">
+          <label>${c.icon} ${c.name} price (${CONFIG.currency})</label>
+          <input type="number" id="price-${s.id}-${c.id}" value="${s.prices[c.id]}" min="0" step="0.50" />
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+}
+
+function savePricing() {
+  const data = {};
+  SERVICES.forEach(s => {
+    data[s.id] = {
+      duration: parseInt(document.getElementById("dur-" + s.id).value),
+      prices: {}
+    };
+    CAR_TYPES.forEach(c => {
+      data[s.id].prices[c.id] = parseFloat(document.getElementById(`price-${s.id}-${c.id}`).value);
+    });
+    // Apply to live SERVICES array so it takes effect immediately
+    s.duration = data[s.id].duration;
+    s.prices = data[s.id].prices;
+  });
+  savePricingData(data);
+  document.getElementById("pricingMsg").innerHTML =
+    `<div class="alert alert-success">✅ Prices saved! Customers will see the new prices immediately.</div>`;
+  setTimeout(() => document.getElementById("pricingMsg").innerHTML = "", 3000);
+}
+
+// ── Settings ──────────────────────────────────
+function loadSettings() {
+  const saved = localStorage.getItem("rcw_settings");
+  const s = saved ? JSON.parse(saved) : CONFIG;
+  document.getElementById("settingName").value    = s.businessName || CONFIG.businessName;
+  document.getElementById("settingEmail").value   = s.ownerEmail   || CONFIG.ownerEmail;
+  document.getElementById("settingPaypal").value  = s.paypalUsername|| CONFIG.paypalUsername;
+  document.getElementById("settingWindow").value  = s.bookingWindowDays || CONFIG.bookingWindowDays;
+  document.getElementById("settingMsg").value     = s.confirmationMessage || CONFIG.confirmationMessage;
+}
+
+function saveSettings() {
+  const s = {
+    businessName:        document.getElementById("settingName").value.trim(),
+    ownerEmail:          document.getElementById("settingEmail").value.trim(),
+    paypalUsername:      document.getElementById("settingPaypal").value.trim(),
+    bookingWindowDays:   parseInt(document.getElementById("settingWindow").value),
+    confirmationMessage: document.getElementById("settingMsg").value.trim()
+  };
+  localStorage.setItem("rcw_settings", JSON.stringify(s));
+  // Apply live
+  Object.assign(CONFIG, s);
+  document.getElementById("settingsMsg").innerHTML =
+    `<div class="alert alert-success">✅ Settings saved!</div>`;
+  setTimeout(() => document.getElementById("settingsMsg").innerHTML = "", 3000);
+}
+
+// ── Init ──────────────────────────────────────
+if (sessionStorage.getItem("rcw_admin") === "1") {
+  showTab("bookings");
+  loadSettings();
+}
+
+// Apply saved pricing on load
+(function applyPricing() {
+  const saved = getPricing();
+  if (!saved) return;
+  SERVICES.forEach(s => {
+    if (saved[s.id]) {
+      s.duration = saved[s.id].duration;
+      s.prices   = saved[s.id].prices;
+    }
+  });
+})();
+
+// Apply saved settings on load
+(function applySettings() {
+  const saved = localStorage.getItem("rcw_settings");
+  if (saved) Object.assign(CONFIG, JSON.parse(saved));
+})();
+</script>
+
+</body>
+</html>
