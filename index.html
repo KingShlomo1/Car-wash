@@ -1,201 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book a Wash – Rei's Car Wash</title>
+  <title>הזמן תור - שטיפת רכב של ריי</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header>
-  <h1>🚗 Rei's Car Wash</h1>
-  <p>Book your appointment in seconds</p>
-  <nav>
-    <a href="index.html" class="active">Book Now</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="admin.html">Admin</a>
-  </nav>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 10H3l1.5-5h15L21 10zM3 10l-1 4h19l-1-4M6 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>שטיפת רכב של ריי</h1>
+        <p>מקצועי, מהיר, אמין</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html" class="active">הזמן תור</a>
+      <a href="pricing.html">תמחור</a>
+      <a href="admin.html">ניהול</a>
+    </nav>
+  </div>
+  <div class="header-divider"></div>
 </header>
+
+<!-- Step bar -->
+<div class="step-bar">
+  <div class="step-bar-inner">
+    <div class="step-item active" id="si1">
+      <span class="step-num">1</span>סוג רכב
+    </div>
+    <span class="step-sep">›</span>
+    <div class="step-item" id="si2">
+      <span class="step-num">2</span>שירות
+    </div>
+    <span class="step-sep">›</span>
+    <div class="step-item" id="si3">
+      <span class="step-num">3</span>תאריך ושעה
+    </div>
+    <span class="step-sep">›</span>
+    <div class="step-item" id="si4">
+      <span class="step-num">4</span>פרטים אישיים
+    </div>
+    <span class="step-sep">›</span>
+    <div class="step-item" id="si5">
+      <span class="step-num">5</span>אישור ותשלום
+    </div>
+  </div>
+</div>
 
 <div class="container">
 
-  <!-- Step tracker -->
-  <div id="stepTracker" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-    <div class="step-indicator active" data-step="1">1. Car Type</div>
-    <div class="step-indicator" data-step="2">2. Service</div>
-    <div class="step-indicator" data-step="3">3. Date &amp; Time</div>
-    <div class="step-indicator" data-step="4">4. Your Details</div>
-    <div class="step-indicator" data-step="5">5. Confirm &amp; Pay</div>
-  </div>
-
-  <!-- ── Step 1: Car Type ───────────────────── -->
+  <!-- Step 1: Car Type -->
   <div id="step1" class="step-panel">
     <div class="card">
-      <h2>Step 1 — Select your car type</h2>
+      <div class="card-title">בחר סוג רכב <span class="title-badge">שלב 1</span></div>
       <div class="option-grid" id="carTypeGrid"></div>
     </div>
   </div>
 
-  <!-- ── Step 2: Service ────────────────────── -->
+  <!-- Step 2: Service -->
   <div id="step2" class="step-panel" style="display:none">
     <div class="card">
-      <h2>Step 2 — Choose a service</h2>
+      <div class="card-title">בחר שירות <span class="title-badge">שלב 2</span></div>
       <div class="option-grid" id="serviceGrid"></div>
     </div>
-    <div style="text-align:right">
-      <button class="btn btn-secondary btn-sm" onclick="goToStep(1)">← Back</button>
+    <div style="text-align:left">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(1)">חזור</button>
     </div>
   </div>
 
-  <!-- ── Step 3: Date & Time ────────────────── -->
+  <!-- Step 3: Date & Time -->
   <div id="step3" class="step-panel" style="display:none">
     <div class="card">
-      <h2>Step 3 — Pick a date &amp; time</h2>
+      <div class="card-title">בחר תאריך ושעה <span class="title-badge">שלב 3</span></div>
 
       <div class="form-group">
-        <label for="dateInput">Select a date</label>
+        <label for="dateInput">תאריך</label>
         <input type="date" id="dateInput" />
       </div>
 
       <div class="form-group">
-        <label>Available time slots</label>
+        <label>שעות פנויות</label>
         <div id="slotGrid" class="slot-grid">
-          <p style="color:#888;font-size:0.9rem">Choose a date to see available slots.</p>
+          <p style="color:#94a3b8;font-size:0.88rem">בחר תאריך כדי לראות שעות פנויות.</p>
         </div>
       </div>
     </div>
-    <div style="text-align:right">
-      <button class="btn btn-secondary btn-sm" onclick="goToStep(2)">← Back</button>
+    <div style="text-align:left">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(2)">חזור</button>
     </div>
   </div>
 
-  <!-- ── Step 4: Customer Details ───────────── -->
+  <!-- Step 4: Customer Details -->
   <div id="step4" class="step-panel" style="display:none">
     <div class="card">
-      <h2>Step 4 — Your details</h2>
+      <div class="card-title">פרטים אישיים <span class="title-badge">שלב 4</span></div>
 
       <div class="form-group">
-        <label for="custName">Full name *</label>
-        <input type="text" id="custName" placeholder="Jane Smith" />
+        <label for="custName">שם מלא *</label>
+        <input type="text" id="custName" placeholder="ישראל ישראלי" />
       </div>
 
       <div class="form-group">
-        <label for="custEmail">Email address *</label>
-        <input type="email" id="custEmail" placeholder="jane@email.com" />
+        <label for="custEmail">כתובת אימייל *</label>
+        <input type="email" id="custEmail" placeholder="israel@email.com" />
       </div>
 
       <div class="form-group">
-        <label for="custPhone">Phone number (optional)</label>
-        <input type="tel" id="custPhone" placeholder="+1 555 000 0000" />
+        <label for="custPhone">מספר טלפון (אופציונלי)</label>
+        <input type="tel" id="custPhone" placeholder="050-000-0000" />
       </div>
 
       <div class="form-group">
-        <label for="custNotes">Special requests (optional)</label>
-        <textarea id="custNotes" placeholder="e.g. extra dirty, needs pet hair removal…"></textarea>
+        <label for="custNotes">בקשות מיוחדות (אופציונלי)</label>
+        <textarea id="custNotes" placeholder="לדוגמה: רכב מלוכלך במיוחד, הסרת שיער חיות מחמד..."></textarea>
       </div>
     </div>
-    <div style="text-align:right">
-      <button class="btn btn-secondary btn-sm" onclick="goToStep(3)">← Back</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(3)">חזור</button>
+      <button class="btn btn-primary btn-sm" style="width:auto;padding:10px 28px" onclick="goToStep(5)">המשך לתשלום</button>
     </div>
   </div>
 
-  <!-- ── Step 5: Summary & Pay ─────────────── -->
+  <!-- Step 5: Summary & Pay -->
   <div id="step5" class="step-panel" style="display:none">
     <div class="card">
-      <h2>Step 5 — Review &amp; pay</h2>
+      <div class="card-title">סיכום הזמנה ותשלום <span class="title-badge">שלב 5</span></div>
 
       <div class="summary-box" id="bookingSummary"></div>
 
-      <div id="paymentSection">
-        <div class="alert alert-info">
-          📱 Pay via <strong>Bitt / DCash</strong>. Open your DCash app, send to the wallet ID below, then click confirm.
-        </div>
-
-        <!-- Bitt inline summary -->
-        <div style="border:2px solid #1a73e8;border-radius:10px;padding:16px;margin-bottom:12px;background:#f0f7ff">
-          <div style="font-weight:700;color:#1a73e8;margin-bottom:10px">Bitt / DCash Payment Details</div>
-          <table style="width:100%;font-size:0.93rem;border-collapse:collapse">
-            <tr><td style="color:#777;padding:4px 8px">Send to</td>
-                <td style="font-weight:700;padding:4px 8px" id="s5BittId"></td></tr>
-            <tr style="background:#e8f0fe"><td style="color:#777;padding:4px 8px">Account name</td>
-                <td style="font-weight:700;padding:4px 8px" id="s5BittName"></td></tr>
-            <tr><td style="color:#777;padding:4px 8px">Amount</td>
-                <td style="font-weight:700;color:#1a73e8;padding:4px 8px;font-size:1.05rem" id="s5BittAmt"></td></tr>
-            <tr style="background:#e8f0fe"><td style="color:#777;padding:4px 8px">Note / Ref</td>
-                <td style="font-weight:700;padding:4px 8px" id="s5BittRef">Will show after booking</td></tr>
-          </table>
-        </div>
-
-        <button class="btn btn-primary" id="confirmBtn">
-          ✅ I've sent the payment — Confirm my booking
-        </button>
+      <div class="alert alert-info">
+        <div class="alert-dot"></div>
+        <div>שלח את התשלום דרך <strong>Bitt / DCash</strong> לפרטים המופיעים למטה, ולאחר מכן לחץ על "אשר הזמנה".</div>
       </div>
 
-      <div id="alreadyPaidNotice" style="display:none" class="alert alert-warning">
-        ℹ️ Click <strong>"Confirm my booking"</strong> after sending your DCash payment.
+      <!-- Bitt inline details -->
+      <div style="border:1.5px solid #d1fae5;border-radius:12px;padding:18px;margin-bottom:16px;background:#f0fdf4">
+        <div style="font-weight:700;color:#065f46;font-size:0.95rem;margin-bottom:12px">פרטי תשלום Bitt / DCash</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.9rem">
+          <tr>
+            <td style="color:#6b7280;padding:5px 0;width:40%">שלח אל</td>
+            <td style="font-weight:700;color:#1a1a2e" id="s5BittId"></td>
+          </tr>
+          <tr>
+            <td style="color:#6b7280;padding:5px 0">שם חשבון</td>
+            <td style="font-weight:700;color:#1a1a2e" id="s5BittName"></td>
+          </tr>
+          <tr>
+            <td style="color:#6b7280;padding:5px 0">סכום</td>
+            <td style="font-weight:800;color:#065f46;font-size:1.05rem" id="s5BittAmt"></td>
+          </tr>
+          <tr>
+            <td style="color:#6b7280;padding:5px 0">הערה / אסמכתא</td>
+            <td style="font-weight:700;color:#1a1a2e">יוצג לאחר אישור ההזמנה</td>
+          </tr>
+        </table>
       </div>
+
+      <button class="btn btn-primary" id="confirmBtn">
+        שלחתי את התשלום - אשר הזמנה
+      </button>
     </div>
-    <div style="text-align:right">
-      <button class="btn btn-secondary btn-sm" onclick="goToStep(4)">← Back</button>
+    <div style="text-align:left">
+      <button class="btn btn-secondary btn-sm" onclick="goToStep(4)">חזור</button>
     </div>
   </div>
 
-</div><!-- /.container -->
+</div>
+
+<footer>
+  <p>שטיפת רכב של ריי &copy; 2024 &nbsp;|&nbsp; כל הזכויות שמורות</p>
+</footer>
 
 <script src="data.js"></script>
 <script>
-/* ==========================================
-   Booking page logic
-   ========================================== */
-
 let booking = {
-  carTypeId: null,
-  serviceId: null,
-  date: null,
-  time: null,
-  customerName: null,
-  customerEmail: null,
-  customerPhone: null,
-  customerNotes: null
+  carTypeId: null, serviceId: null,
+  date: null, time: null,
+  customerName: null, customerEmail: null,
+  customerPhone: null, customerNotes: null
 };
 
 let currentStep = 1;
 
-// ── Step tracker styling ─────────────────────
-(function injectStepStyles() {
-  const s = document.createElement("style");
-  s.textContent = `
-    .step-indicator {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      background: #e8eaed;
-      color: #888;
-      white-space: nowrap;
-    }
-    .step-indicator.active {
-      background: #1a73e8;
-      color: white;
-    }
-    .step-indicator.done {
-      background: #43a047;
-      color: white;
-    }
-  `;
-  document.head.appendChild(s);
-})();
-
-// ── Car type grid ─────────────────────────────
+// ── Car types ─────────────────────────────────
 function renderCarTypes() {
-  const grid = document.getElementById("carTypeGrid");
-  grid.innerHTML = CAR_TYPES.map(ct => `
-    <label class="option-card" id="ct-${ct.id}" onclick="selectCarType('${ct.id}')">
-      <span class="icon">${ct.icon}</span>
-      <span class="name">${ct.name}</span>
-      <span class="duration">${ct.description}</span>
-    </label>
+  document.getElementById("carTypeGrid").innerHTML = CAR_TYPES.map(ct => `
+    <div class="option-card" id="ct-${ct.id}" onclick="selectCarType('${ct.id}')">
+      <div class="check-mark"></div>
+      <div class="opt-name">${ct.name}</div>
+      <div class="opt-desc">${ct.description}</div>
+    </div>
   `).join("");
 }
 
@@ -203,21 +205,21 @@ function selectCarType(id) {
   booking.carTypeId = id;
   document.querySelectorAll("#carTypeGrid .option-card").forEach(el => el.classList.remove("selected"));
   document.getElementById("ct-" + id).classList.add("selected");
-  setTimeout(() => goToStep(2), 300);
+  setTimeout(() => goToStep(2), 280);
 }
 
-// ── Service grid ──────────────────────────────
+// ── Services ──────────────────────────────────
 function renderServices() {
-  const grid = document.getElementById("serviceGrid");
-  grid.innerHTML = SERVICES.map(s => {
-    const price = booking.carTypeId ? s.prices[booking.carTypeId] : "–";
+  document.getElementById("serviceGrid").innerHTML = SERVICES.map(s => {
+    const price = booking.carTypeId ? s.prices[booking.carTypeId] : "-";
     return `
-      <label class="option-card" id="svc-${s.id}" onclick="selectService('${s.id}')">
-        <span class="icon">${s.icon}</span>
-        <span class="name">${s.name}</span>
-        <span class="price">${CONFIG.currency}${price}</span>
-        <span class="duration">⏱ ${s.duration} min · ${s.description}</span>
-      </label>
+      <div class="option-card" id="svc-${s.id}" onclick="selectService('${s.id}')">
+        <div class="check-mark"></div>
+        <div class="opt-name">${s.name}</div>
+        <div class="opt-desc">${s.description}</div>
+        <div class="opt-price">${CONFIG.currency}${price}</div>
+        <div class="opt-duration">${s.duration} דקות</div>
+      </div>
     `;
   }).join("");
 }
@@ -226,89 +228,87 @@ function selectService(id) {
   booking.serviceId = id;
   document.querySelectorAll("#serviceGrid .option-card").forEach(el => el.classList.remove("selected"));
   document.getElementById("svc-" + id).classList.add("selected");
-  setTimeout(() => goToStep(3), 300);
+  setTimeout(() => goToStep(3), 280);
 }
 
-// ── Date & slot selection ─────────────────────
+// ── Date & slots ──────────────────────────────
 function initDatePicker() {
   const input = document.getElementById("dateInput");
   const today = new Date();
   const max   = new Date(today);
   max.setDate(max.getDate() + CONFIG.bookingWindowDays);
-
-  input.min = today.toISOString().split("T")[0];
-  input.max = max.toISOString().split("T")[0];
-  input.value = "";
-
-  input.addEventListener("change", () => {
-    booking.date = input.value;
-    booking.time = null;
-    renderSlots();
-  });
+  input.min   = today.toISOString().split("T")[0];
+  input.max   = max.toISOString().split("T")[0];
+  if (!booking.date) input.value = "";
+  input.onchange = () => { booking.date = input.value; booking.time = null; renderSlots(); };
 }
 
 function renderSlots() {
   const grid = document.getElementById("slotGrid");
-  if (!booking.date) { grid.innerHTML = "<p>Choose a date above.</p>"; return; }
+  if (!booking.date) { grid.innerHTML = "<p style='color:#94a3b8;font-size:0.88rem'>בחר תאריך למעלה.</p>"; return; }
 
-  const dayName = Utils.getDayName(booking.date);
+  const dayName  = Utils.getDayName(booking.date);
   const schedule = Storage.getSchedule();
   const daySched = schedule[dayName];
 
   if (!daySched || !daySched.open) {
-    grid.innerHTML = `<div class="alert alert-warning">Sorry, we are closed on ${dayName.charAt(0).toUpperCase()+dayName.slice(1)}s.</div>`;
+    const dayMap = { monday:"שני", tuesday:"שלישי", wednesday:"רביעי", thursday:"חמישי", friday:"שישי", saturday:"שבת", sunday:"ראשון" };
+    grid.innerHTML = `<div class="alert alert-warning"><div class="alert-dot"></div><div>אנו סגורים ביום ${dayMap[dayName] || dayName}. אנא בחר יום אחר.</div></div>`;
     return;
   }
 
   const service = SERVICES.find(s => s.id === booking.serviceId);
-  const allBookings = Storage.getBookings().filter(b => b.date === booking.date && b.status !== "cancelled");
-
-  // Convert existing bookings to {startMins, duration}
-  const bookedSlots = allBookings.map(b => {
-    const svc = SERVICES.find(s => s.id === b.serviceId);
-    const [h, m] = b.time.split(":").map(Number);
-    return { startMins: h * 60 + m, duration: svc ? svc.duration : 60 };
-  });
+  const bookedSlots = Storage.getBookings()
+    .filter(b => b.date === booking.date && b.status !== "cancelled")
+    .map(b => {
+      const svc = SERVICES.find(s => s.id === b.serviceId);
+      const [h, m] = b.time.split(":").map(Number);
+      return { startMins: h * 60 + m, duration: svc ? svc.duration : 60 };
+    });
 
   const slots = Utils.generateSlots(daySched, bookedSlots, service.duration);
 
   if (slots.length === 0) {
-    grid.innerHTML = `<div class="alert alert-warning">No available slots on this day for a ${service.name} (${service.duration} min). Try another day.</div>`;
+    grid.innerHTML = `<div class="alert alert-warning"><div class="alert-dot"></div><div>אין שעות פנויות ביום זה לשירות ${service.name}. אנא בחר יום אחר.</div></div>`;
     return;
   }
 
-  grid.innerHTML = slots.map(slot => `
-    <button class="slot-btn ${slot.booked ? "booked" : ""} ${booking.time === slot.time ? "selected" : ""}"
-            onclick="${slot.booked ? "" : `selectSlot('${slot.time}')`}"
-            ${slot.booked ? "disabled" : ""}>
-      ${Utils.formatTime(slot.time)}${slot.booked ? "<br><small>Booked</small>" : ""}
-    </button>
-  `).join("");
+  grid.innerHTML = slots.map(slot => {
+    if (slot.booked) {
+      return `<button class="slot-btn" disabled style="cursor:not-allowed;text-decoration:line-through;opacity:0.45">
+        ${Utils.formatTime(slot.time)}<br><small>תפוס</small>
+      </button>`;
+    }
+    return `<button class="slot-btn${booking.time === slot.time ? " selected" : ""}"
+        onclick="selectSlot('${slot.time}', this)">
+      ${Utils.formatTime(slot.time)}
+    </button>`;
+  }).join("");
 }
 
-function selectSlot(time) {
+function selectSlot(time, el) {
   booking.time = time;
   document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
-  event.target.closest(".slot-btn").classList.add("selected");
-  setTimeout(() => goToStep(4), 300);
+  el.classList.add("selected");
+  setTimeout(() => goToStep(4), 280);
 }
 
 // ── Summary ───────────────────────────────────
 function renderSummary() {
-  const service  = SERVICES.find(s => s.id === booking.serviceId);
-  const carType  = CAR_TYPES.find(c => c.id === booking.carTypeId);
-  const price    = service.prices[booking.carTypeId];
+  const service = SERVICES.find(s => s.id === booking.serviceId);
+  const carType = CAR_TYPES.find(c => c.id === booking.carTypeId);
+  const price   = service.prices[booking.carTypeId];
 
   document.getElementById("bookingSummary").innerHTML = `
-    <h3>📋 Booking Summary</h3>
-    <div class="summary-row"><span>Name</span><span>${booking.customerName}</span></div>
-    <div class="summary-row"><span>Email</span><span>${booking.customerEmail}</span></div>
-    <div class="summary-row"><span>Date</span><span>${Utils.formatDate(booking.date)}</span></div>
-    <div class="summary-row"><span>Time</span><span>${Utils.formatTime(booking.time)}</span></div>
-    <div class="summary-row"><span>Car type</span><span>${carType.icon} ${carType.name}</span></div>
-    <div class="summary-row"><span>Service</span><span>${service.icon} ${service.name}</span></div>
-    <div class="summary-row"><span>Duration</span><span>${service.duration} min</span></div>
-    <div class="summary-row total"><span>Total due</span><span>${CONFIG.currency}${price}</span></div>
+    <h3>סיכום ההזמנה</h3>
+    <div class="summary-row"><span>שם</span><span>${booking.customerName}</span></div>
+    <div class="summary-row"><span>אימייל</span><span>${booking.customerEmail}</span></div>
+    <div class="summary-row"><span>תאריך</span><span>${Utils.formatDate(booking.date)}</span></div>
+    <div class="summary-row"><span>שעה</span><span>${Utils.formatTime(booking.time)}</span></div>
+    <div class="summary-row"><span>סוג רכב</span><span>${carType.name}</span></div>
+    <div class="summary-row"><span>שירות</span><span>${service.name}</span></div>
+    <div class="summary-row"><span>משך</span><span>${service.duration} דקות</span></div>
+    <div class="summary-row total"><span>סה"כ לתשלום</span><span>${CONFIG.currency}${price} ${CONFIG.currencyCode}</span></div>
   `;
 
   document.getElementById("s5BittId").textContent   = CONFIG.bittWalletId;
@@ -316,48 +316,40 @@ function renderSummary() {
   document.getElementById("s5BittAmt").textContent  = CONFIG.currency + price + " " + CONFIG.currencyCode;
 }
 
-// ── Step navigation ───────────────────────────
+// ── Navigation ────────────────────────────────
 function goToStep(n) {
-  // Validate before advancing
-  if (n > currentStep) {
-    if (!validateStep(currentStep)) return;
-  }
+  if (n > currentStep && !validateStep(currentStep)) return;
 
   document.querySelectorAll(".step-panel").forEach((el, i) => {
     el.style.display = (i + 1 === n) ? "block" : "none";
   });
 
-  document.querySelectorAll(".step-indicator").forEach((el, i) => {
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById("si" + i);
     el.classList.remove("active", "done");
-    if (i + 1 === n)  el.classList.add("active");
-    if (i + 1 < n)   el.classList.add("done");
-  });
+    if (i === n) el.classList.add("active");
+    if (i < n)  el.classList.add("done");
+  }
 
   currentStep = n;
-
   if (n === 2) renderServices();
   if (n === 3) initDatePicker();
   if (n === 5) renderSummary();
-
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function validateStep(n) {
-  if (n === 1 && !booking.carTypeId) {
-    alert("Please select a car type."); return false;
-  }
-  if (n === 2 && !booking.serviceId) {
-    alert("Please choose a service."); return false;
-  }
+  if (n === 1 && !booking.carTypeId) { alert("אנא בחר סוג רכב."); return false; }
+  if (n === 2 && !booking.serviceId) { alert("אנא בחר שירות."); return false; }
   if (n === 3) {
-    if (!booking.date) { alert("Please pick a date."); return false; }
-    if (!booking.time) { alert("Please select a time slot."); return false; }
+    if (!booking.date) { alert("אנא בחר תאריך."); return false; }
+    if (!booking.time) { alert("אנא בחר שעה."); return false; }
   }
   if (n === 4) {
     const name  = document.getElementById("custName").value.trim();
     const email = document.getElementById("custEmail").value.trim();
-    if (!name)  { alert("Please enter your name."); return false; }
-    if (!email || !email.includes("@")) { alert("Please enter a valid email."); return false; }
+    if (!name)                { alert("אנא הכנס שם מלא."); return false; }
+    if (!email.includes("@")) { alert("אנא הכנס כתובת אימייל תקינה."); return false; }
     booking.customerName  = name;
     booking.customerEmail = email;
     booking.customerPhone = document.getElementById("custPhone").value.trim();
@@ -366,11 +358,9 @@ function validateStep(n) {
   return true;
 }
 
-// ── Confirm booking ───────────────────────────
+// ── Confirm ───────────────────────────────────
 document.getElementById("confirmBtn").addEventListener("click", () => {
   const saved = Storage.addBooking({ ...booking });
-
-  // Redirect to confirmation page
   localStorage.setItem("rcw_last_booking", JSON.stringify(saved));
   window.location.href = "confirmation.html";
 });

@@ -1,177 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin – Rei's Car Wash</title>
+  <title>ניהול - שטיפת רכב של ריי</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header>
-  <h1>🚗 Rei's Car Wash</h1>
-  <p>Admin Panel</p>
-  <nav>
-    <a href="index.html">Book Now</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="admin.html" class="active">Admin</a>
-  </nav>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 10H3l1.5-5h15L21 10zM3 10l-1 4h19l-1-4M6 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>שטיפת רכב של ריי</h1>
+        <p>מקצועי, מהיר, אמין</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">הזמן תור</a>
+      <a href="pricing.html">תמחור</a>
+      <a href="admin.html" class="active">ניהול</a>
+    </nav>
+  </div>
+  <div class="header-divider"></div>
 </header>
+
+<div class="page-hero">
+  <h2>פאנל ניהול</h2>
+  <p>ניהול הזמנות, לוח זמנים, שירותים ומחירים</p>
+</div>
 
 <div class="container">
 
-  <!-- ── Password gate ─────────────────────── -->
-  <div id="loginGate" class="card">
-    <h2>🔒 Admin Login</h2>
-    <p style="color:#555;margin-bottom:18px">Enter your admin password to access the panel.</p>
+  <!-- Login gate -->
+  <div id="loginGate" class="card" style="max-width:420px;margin:0 auto">
+    <div class="card-title">כניסת מנהל</div>
     <div class="form-group">
-      <label for="adminPass">Password</label>
-      <input type="password" id="adminPass" placeholder="Enter password" />
+      <label for="adminPass">סיסמה</label>
+      <input type="password" id="adminPass" placeholder="הכנס סיסמה" />
     </div>
-    <button class="btn btn-primary" onclick="adminLogin()">Log in</button>
-    <p style="margin-top:12px;font-size:0.82rem;color:#888">
-      Default password: <code>reis2024</code>
-      — change it in <code>admin.html</code> (search for ADMIN_PASSWORD).
+    <button class="btn btn-primary" onclick="adminLogin()">כניסה</button>
+    <p style="margin-top:12px;font-size:0.8rem;color:#94a3b8">
+      סיסמת ברירת מחדל: <code>reis2024</code> — שנה אותה בקוד של admin.html
     </p>
   </div>
 
-  <!-- ── Admin content (hidden until login) ─ -->
+  <!-- Admin content -->
   <div id="adminContent" style="display:none">
 
-    <!-- Tabs -->
-    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="showTab('bookings')">📅 Bookings</button>
-      <button class="btn btn-secondary btn-sm" onclick="showTab('schedule')">🕐 Schedule</button>
-      <button class="btn btn-secondary btn-sm" onclick="showTab('pricing')">💰 Pricing</button>
-      <button class="btn btn-secondary btn-sm" onclick="showTab('settings')">⚙️ Settings</button>
-      <button class="btn btn-danger btn-sm" onclick="adminLogout()" style="margin-left:auto">Log out</button>
+    <div class="admin-tabs">
+      <button class="tab-btn active" onclick="showTab('bookings', this)">הזמנות</button>
+      <button class="tab-btn" onclick="showTab('schedule', this)">לוח זמנים</button>
+      <button class="tab-btn" onclick="showTab('services', this)">שירותים ומחירים</button>
+      <button class="tab-btn" onclick="showTab('cartypes', this)">סוגי רכב</button>
+      <button class="tab-btn" onclick="showTab('settings', this)">הגדרות</button>
+      <button class="tab-btn tab-danger" onclick="adminLogout()">יציאה</button>
     </div>
 
-    <!-- ── Bookings tab ──────────────────── -->
+    <!-- ── Bookings ───────────────────────────── -->
     <div id="tab-bookings" class="tab-panel">
 
       <div class="card">
-        <h2>All Bookings</h2>
+        <div class="card-title">כל ההזמנות</div>
 
-        <!-- Filter bar -->
-        <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center">
-          <input type="date" id="filterDate" style="flex:1;min-width:140px"
-                 onchange="renderBookings()" placeholder="Filter by date" />
-          <select id="filterStatus" style="flex:1;min-width:120px" onchange="renderBookings()">
-            <option value="">All statuses</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
+        <div class="filter-bar">
+          <input type="date" id="filterDate" onchange="renderBookings()" />
+          <select id="filterStatus" onchange="renderBookings()">
+            <option value="">כל הסטטוסים</option>
+            <option value="pending">ממתין</option>
+            <option value="confirmed">מאושר</option>
+            <option value="cancelled">מבוטל</option>
           </select>
-          <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearFilters()">נקה</button>
         </div>
 
         <div id="bookingsList"></div>
-        <p id="noBookings" style="color:#888;text-align:center;display:none">No bookings found.</p>
+        <p id="noBookings" style="color:#94a3b8;text-align:center;padding:20px;display:none">לא נמצאו הזמנות.</p>
       </div>
 
-      <!-- Booking stats -->
       <div class="card">
-        <h2>Quick Stats</h2>
-        <div id="statsPanel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px"></div>
+        <div class="card-title">סטטיסטיקות</div>
+        <div class="stats-grid" id="statsPanel"></div>
       </div>
     </div>
 
-    <!-- ── Schedule tab ──────────────────── -->
+    <!-- ── Schedule ───────────────────────────── -->
     <div id="tab-schedule" class="tab-panel" style="display:none">
       <div class="card">
-        <h2>Weekly Schedule</h2>
-        <p style="color:#555;margin-bottom:18px">
-          Toggle days on/off and set your opening &amp; closing times. Changes save automatically.
-        </p>
+        <div class="card-title">לוח זמנים שבועי</div>
+        <p style="color:#64748b;font-size:0.88rem;margin-bottom:18px">הפעל או כבה ימים וקבע שעות פעילות. השינויים נשמרים מיד.</p>
         <div id="scheduleEditor"></div>
-        <button class="btn btn-primary" style="margin-top:18px" onclick="saveSchedule()">
-          💾 Save Schedule
-        </button>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" style="width:auto;padding:11px 28px" onclick="saveSchedule()">שמור לוח זמנים</button>
+          <button class="btn btn-secondary" onclick="resetSchedule()">אפס לברירת מחדל</button>
+        </div>
         <div id="scheduleMsg" style="margin-top:10px"></div>
       </div>
     </div>
 
-    <!-- ── Pricing tab ───────────────────── -->
-    <div id="tab-pricing" class="tab-panel" style="display:none">
+    <!-- ── Services & Pricing ─────────────────── -->
+    <div id="tab-services" class="tab-panel" style="display:none">
       <div class="card">
-        <h2>Edit Prices &amp; Durations</h2>
-        <p style="color:#555;margin-bottom:18px">
-          Update prices and service durations. Changes take effect immediately.
-        </p>
-        <div id="pricingEditor"></div>
-        <button class="btn btn-primary" style="margin-top:18px" onclick="savePricing()">
-          💾 Save Prices
-        </button>
-        <div id="pricingMsg" style="margin-top:10px"></div>
+        <div class="card-title">שירותים, מחירים ומשכים</div>
+        <p style="color:#64748b;font-size:0.88rem;margin-bottom:18px">ערוך שמות, תיאורים, משכים ומחירים לכל שירות וסוג רכב.</p>
+        <div id="servicesEditor"></div>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" style="width:auto;padding:11px 28px" onclick="saveServices()">שמור שירותים</button>
+        </div>
+        <div id="servicesMsg" style="margin-top:10px"></div>
       </div>
     </div>
 
-    <!-- ── Settings tab ─────────────────── -->
+    <!-- ── Car Types ──────────────────────────── -->
+    <div id="tab-cartypes" class="tab-panel" style="display:none">
+      <div class="card">
+        <div class="card-title">סוגי רכב</div>
+        <p style="color:#64748b;font-size:0.88rem;margin-bottom:18px">ערוך את שמות וסוגי הרכבים שהלקוחות יכולים לבחור.</p>
+        <div id="carTypesEditor"></div>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" style="width:auto;padding:11px 28px" onclick="saveCarTypes()">שמור סוגי רכב</button>
+        </div>
+        <div id="carTypesMsg" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- ── Settings ───────────────────────────── -->
     <div id="tab-settings" class="tab-panel" style="display:none">
       <div class="card">
-        <h2>Business Settings</h2>
+        <div class="card-title">הגדרות עסק</div>
         <div class="form-group">
-          <label>Business name</label>
+          <label>שם העסק</label>
           <input type="text" id="settingName" />
         </div>
         <div class="form-group">
-          <label>Your email (for records)</label>
+          <label>אימייל (לרשומות פנימיות)</label>
           <input type="email" id="settingEmail" />
         </div>
         <div class="form-group">
-          <label>Bitt / DCash wallet ID (phone number)</label>
-          <input type="text" id="settingBittId" placeholder="e.g. 1868-555-0000" />
-          <small style="color:#888">This is the number customers send DCash to</small>
+          <label>מזהה ארנק Bitt / DCash</label>
+          <input type="text" id="settingBittId" placeholder="לדוגמה: 1868-555-0000" />
+          <small>זה המספר שאליו הלקוחות ישלחו DCash</small>
         </div>
         <div class="form-group">
-          <label>Bitt account name (shown to customers)</label>
-          <input type="text" id="settingBittName" placeholder="e.g. Rei's Car Wash" />
+          <label>שם חשבון Bitt (מוצג ללקוחות)</label>
+          <input type="text" id="settingBittName" placeholder="לדוגמה: שטיפת רכב של ריי" />
         </div>
         <div class="form-group">
-          <label>Booking window (days ahead)</label>
-          <input type="number" id="settingWindow" min="1" max="90" />
+          <label>סמל מטבע</label>
+          <input type="text" id="settingCurrency" style="width:80px" />
         </div>
         <div class="form-group">
-          <label>Confirmation message</label>
+          <label>קוד מטבע</label>
+          <input type="text" id="settingCurrencyCode" style="width:100px" placeholder="XCD" />
+        </div>
+        <div class="form-group">
+          <label>טווח הזמנות (ימים קדימה)</label>
+          <input type="number" id="settingWindow" min="1" max="90" style="width:100px" />
+        </div>
+        <div class="form-group">
+          <label>הודעת אישור ללקוח</label>
           <textarea id="settingMsg"></textarea>
         </div>
-        <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+        <button class="btn btn-primary" style="width:auto;padding:11px 28px" onclick="saveSettings()">שמור הגדרות</button>
         <div id="settingsMsg" style="margin-top:10px"></div>
       </div>
 
       <div class="card">
-        <h2>⚠️ Danger Zone</h2>
-        <p style="color:#555;margin-bottom:14px">These actions cannot be undone.</p>
-        <button class="btn btn-danger" onclick="clearAllBookings()">🗑️ Delete all bookings</button>
-        <button class="btn btn-danger" style="margin-left:10px" onclick="resetSchedule()">↩️ Reset schedule to default</button>
+        <div class="card-title">אזור סכנה</div>
+        <p style="color:#64748b;font-size:0.88rem;margin-bottom:16px">פעולות אלו אינן ניתנות לביטול.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-danger" onclick="clearAllBookings()">מחק את כל ההזמנות</button>
+          <button class="btn btn-danger" onclick="resetSchedule()">אפס לוח זמנים לברירת מחדל</button>
+          <button class="btn btn-danger" onclick="resetServices()">אפס שירותים לברירת מחדל</button>
+        </div>
       </div>
     </div>
 
   </div><!-- /#adminContent -->
 
-</div><!-- /.container -->
+</div>
+
+<footer>
+  <p>שטיפת רכב של ריי &copy; 2024 &nbsp;|&nbsp; כל הזכויות שמורות</p>
+</footer>
 
 <script src="data.js"></script>
 <script>
 /* ============================================
-   Admin panel logic
+   Admin panel — Hebrew / Bitt version
    ============================================ */
 
-// ── Change this password ──────────────────────
-const ADMIN_PASSWORD = "reis2024";
-// ─────────────────────────────────────────────
+const ADMIN_PASSWORD = "reis2024"; // ← שנה כאן
 
+// ── Auth ──────────────────────────────────────
 function adminLogin() {
-  const pass = document.getElementById("adminPass").value;
-  if (pass === ADMIN_PASSWORD) {
+  if (document.getElementById("adminPass").value === ADMIN_PASSWORD) {
     sessionStorage.setItem("rcw_admin", "1");
     document.getElementById("loginGate").style.display = "none";
     document.getElementById("adminContent").style.display = "block";
-    showTab("bookings");
-    loadSettings();
+    showTab("bookings", document.querySelector(".tab-btn"));
   } else {
-    alert("Incorrect password. Try again.");
+    alert("סיסמה שגויה. נסה שוב.");
   }
 }
 
@@ -180,77 +214,78 @@ function adminLogout() {
   location.reload();
 }
 
-// Auto-login if already authenticated this session
+document.getElementById("adminPass").addEventListener("keydown", e => {
+  if (e.key === "Enter") adminLogin();
+});
+
 if (sessionStorage.getItem("rcw_admin") === "1") {
   document.getElementById("loginGate").style.display = "none";
   document.getElementById("adminContent").style.display = "block";
 }
 
-// ── Tab switching ────────────────────────────
-function showTab(name) {
+// ── Tabs ──────────────────────────────────────
+function showTab(name, btn) {
   document.querySelectorAll(".tab-panel").forEach(el => el.style.display = "none");
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
   document.getElementById("tab-" + name).style.display = "block";
+  if (btn) btn.classList.add("active");
 
   if (name === "bookings")  { renderBookings(); renderStats(); }
   if (name === "schedule")  renderScheduleEditor();
-  if (name === "pricing")   renderPricingEditor();
+  if (name === "services")  renderServicesEditor();
+  if (name === "cartypes")  renderCarTypesEditor();
   if (name === "settings")  loadSettings();
 }
 
-// ── Bookings ─────────────────────────────────
+// ── Bookings ──────────────────────────────────
 function renderBookings() {
   const filterDate   = document.getElementById("filterDate").value;
   const filterStatus = document.getElementById("filterStatus").value;
 
-  let bookings = Storage.getBookings();
-  if (filterDate)   bookings = bookings.filter(b => b.date === filterDate);
-  if (filterStatus) bookings = bookings.filter(b => b.status === filterStatus);
+  let list = Storage.getBookings();
+  if (filterDate)   list = list.filter(b => b.date === filterDate);
+  if (filterStatus) list = list.filter(b => b.status === filterStatus);
+  list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  // Sort newest first
-  bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const container = document.getElementById("bookingsList");
+  const none      = document.getElementById("noBookings");
 
-  const list = document.getElementById("bookingsList");
-  const none = document.getElementById("noBookings");
-
-  if (bookings.length === 0) {
-    list.innerHTML = "";
+  if (!list.length) {
+    container.innerHTML = "";
     none.style.display = "block";
     return;
   }
   none.style.display = "none";
 
-  list.innerHTML = bookings.map(b => {
-    const svc = SERVICES.find(s => s.id === b.serviceId);
-    const car = CAR_TYPES.find(c => c.id === b.carTypeId);
+  container.innerHTML = list.map(b => {
+    const svc   = SERVICES.find(s => s.id === b.serviceId);
+    const car   = CAR_TYPES.find(c => c.id === b.carTypeId);
     const price = svc && car ? svc.prices[car.id] : "?";
     return `
       <div class="booking-item">
-        <div class="booking-info">
-          <div class="name">${b.customerName} <span class="badge badge-${b.status}">${b.status}</span></div>
-          <div class="details">
-            📅 ${Utils.formatDate(b.date)} at ${Utils.formatTime(b.time)} &nbsp;|&nbsp;
-            ${car ? car.icon + " " + car.name : "?"} &nbsp;|&nbsp;
-            ${svc ? svc.icon + " " + svc.name : "?"} &nbsp;|&nbsp;
-            ${CONFIG.currency}${price}
+        <div>
+          <div class="booking-name">
+            ${b.customerName}
+            <span class="badge badge-${b.status}">
+              ${ b.status === "pending" ? "ממתין" : b.status === "confirmed" ? "מאושר" : "מבוטל" }
+            </span>
           </div>
-          <div class="details" style="margin-top:3px">
-            📧 ${b.customerEmail}
-            ${b.customerPhone ? " | 📞 " + b.customerPhone : ""}
-            ${b.customerNotes ? " | 📝 " + b.customerNotes : ""}
+          <div class="booking-detail">
+            ${Utils.formatDate(b.date)} בשעה ${Utils.formatTime(b.time)}
+            &nbsp;|&nbsp; ${car ? car.name : "?"} &nbsp;|&nbsp; ${svc ? svc.name : "?"}
+            &nbsp;|&nbsp; ${CONFIG.currency}${price}
+          </div>
+          <div class="booking-detail">
+            ${b.customerEmail}
+            ${b.customerPhone ? " | " + b.customerPhone : ""}
+            ${b.customerNotes ? " | הערה: " + b.customerNotes : ""}
           </div>
         </div>
         <div class="booking-actions">
-          ${b.status === "pending" ? `
-            <button class="btn btn-sm" style="background:#43a047;color:white"
-              onclick="changeStatus('${b.id}','confirmed')">✅ Confirm</button>
-          ` : ""}
-          ${b.status !== "cancelled" ? `
-            <button class="btn btn-danger btn-sm"
-              onclick="changeStatus('${b.id}','cancelled')">✗ Cancel</button>
-          ` : ""}
-          <button class="btn btn-secondary btn-sm"
-            onclick="deleteBookingAdmin('${b.id}')">🗑</button>
-          <a class="btn btn-secondary btn-sm" href="${Utils.mailtoLink(b)}" target="_blank">📧</a>
+          ${b.status === "pending" ? `<button class="btn btn-success btn-sm" onclick="changeStatus('${b.id}','confirmed')">אשר</button>` : ""}
+          ${b.status !== "cancelled" ? `<button class="btn btn-danger btn-sm" onclick="changeStatus('${b.id}','cancelled')">בטל</button>` : ""}
+          <button class="btn btn-secondary btn-sm" onclick="deleteBookingAdmin('${b.id}')">מחק</button>
+          <a class="btn btn-secondary btn-sm" href="${Utils.mailtoLink(b)}">אימייל</a>
         </div>
       </div>
     `;
@@ -264,7 +299,7 @@ function changeStatus(id, status) {
 }
 
 function deleteBookingAdmin(id) {
-  if (confirm("Delete this booking permanently?")) {
+  if (confirm("למחוק הזמנה זו לצמיתות?")) {
     Storage.deleteBooking(id);
     renderBookings();
     renderStats();
@@ -278,7 +313,7 @@ function clearFilters() {
 }
 
 function clearAllBookings() {
-  if (confirm("Delete ALL bookings? This cannot be undone.")) {
+  if (confirm("למחוק את כל ההזמנות? פעולה זו אינה ניתנת לביטול.")) {
     Storage.saveBookings([]);
     renderBookings();
     renderStats();
@@ -287,80 +322,77 @@ function clearAllBookings() {
 
 // ── Stats ─────────────────────────────────────
 function renderStats() {
-  const all    = Storage.getBookings();
-  const today  = new Date().toISOString().split("T")[0];
-  const stats  = [
-    { label: "Total bookings", value: all.length, icon: "📋" },
-    { label: "Today",     value: all.filter(b => b.date === today).length, icon: "📅" },
-    { label: "Pending",   value: all.filter(b => b.status === "pending").length, icon: "⏳" },
-    { label: "Confirmed", value: all.filter(b => b.status === "confirmed").length, icon: "✅" },
-    { label: "Cancelled", value: all.filter(b => b.status === "cancelled").length, icon: "✗" },
-    {
-      label: "Est. Revenue",
-      icon: "💵",
-      value: CONFIG.currency + all
-        .filter(b => b.status !== "cancelled")
-        .reduce((sum, b) => {
-          const s = SERVICES.find(sv => sv.id === b.serviceId);
-          return sum + (s ? (s.prices[b.carTypeId] || 0) : 0);
-        }, 0)
-    }
+  const all   = Storage.getBookings();
+  const today = new Date().toISOString().split("T")[0];
+  const revenue = all
+    .filter(b => b.status !== "cancelled")
+    .reduce((sum, b) => {
+      const s = SERVICES.find(sv => sv.id === b.serviceId);
+      return sum + (s ? (s.prices[b.carTypeId] || 0) : 0);
+    }, 0);
+
+  const stats = [
+    { label: "סה\"כ הזמנות", value: all.length },
+    { label: "היום",         value: all.filter(b => b.date === today).length },
+    { label: "ממתינות",      value: all.filter(b => b.status === "pending").length },
+    { label: "מאושרות",      value: all.filter(b => b.status === "confirmed").length },
+    { label: "מבוטלות",      value: all.filter(b => b.status === "cancelled").length },
+    { label: "הכנסה משוערת", value: CONFIG.currency + revenue }
   ];
 
   document.getElementById("statsPanel").innerHTML = stats.map(s => `
-    <div style="text-align:center;padding:14px;background:#f8f9fa;border-radius:8px">
-      <div style="font-size:1.6rem">${s.icon}</div>
-      <div style="font-size:1.4rem;font-weight:700;color:#1a73e8">${s.value}</div>
-      <div style="font-size:0.82rem;color:#666">${s.label}</div>
+    <div class="stat-card">
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
     </div>
   `).join("");
 }
 
-// ── Schedule editor ───────────────────────────
+// ── Schedule ──────────────────────────────────
+const DAY_NAMES = {
+  monday:"שני", tuesday:"שלישי", wednesday:"רביעי",
+  thursday:"חמישי", friday:"שישי", saturday:"שבת", sunday:"ראשון"
+};
+const DAY_KEYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+
 function renderScheduleEditor() {
   const schedule = Storage.getSchedule();
-  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
-  const labels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-
-  document.getElementById("scheduleEditor").innerHTML = days.map((d, i) => {
+  document.getElementById("scheduleEditor").innerHTML = DAY_KEYS.map(d => {
     const s = schedule[d];
     return `
-      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:14px;border:1.5px solid ${s.open?"#1a73e8":"#d0d7de"};border-radius:10px;background:${s.open?"#e8f0fe":"#fafafa"}">
-        <label style="min-width:100px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px">
-          <input type="checkbox" id="open-${d}" ${s.open ? "checked" : ""}
-                 onchange="toggleDay('${d}')" style="width:18px;height:18px" />
-          ${labels[i]}
-        </label>
-        <div class="time-range" style="${s.open?"":"opacity:0.4;pointer-events:none"}" id="times-${d}">
-          <input type="time" id="start-${d}" value="${s.start}" style="width:120px" />
-          <span>to</span>
-          <input type="time" id="end-${d}"   value="${s.end}"   style="width:120px" />
-          <span style="color:#888;font-size:0.85rem">
-            Slots every
-            <select id="step-${d}" style="width:70px">
-              ${[30,45,60,90,120].map(v => `<option value="${v}" ${s.slotStep==v?"selected":""}>${v}m</option>`).join("")}
-            </select>
-          </span>
+      <div class="schedule-row ${s.open ? "is-open" : ""}" id="srow-${d}">
+        <div class="day-label">
+          <input type="checkbox" id="open-${d}" ${s.open ? "checked" : ""} onchange="toggleDay('${d}')" />
+          <span>${DAY_NAMES[d]}</span>
+        </div>
+        <div class="time-range" id="times-${d}" style="${s.open ? "" : "opacity:0.35;pointer-events:none"}">
+          <input type="time" id="start-${d}" value="${s.start}" />
+          <span>עד</span>
+          <input type="time" id="end-${d}" value="${s.end}" />
+          <span>תורות כל</span>
+          <select id="step-${d}">
+            ${[30,45,60,90,120].map(v =>
+              `<option value="${v}" ${s.slotStep == v ? "selected" : ""}>${v} דק'</option>`
+            ).join("")}
+          </select>
         </div>
       </div>
     `;
   }).join("");
 }
 
-function toggleDay(day) {
-  const isOpen = document.getElementById("open-" + day).checked;
-  const timesEl = document.getElementById("times-" + day);
-  const wrapper = timesEl.closest("div");
-  timesEl.style.opacity = isOpen ? "1" : "0.4";
-  timesEl.style.pointerEvents = isOpen ? "auto" : "none";
-  wrapper.style.background = isOpen ? "#e8f0fe" : "#fafafa";
-  wrapper.style.borderColor = isOpen ? "#1a73e8" : "#d0d7de";
+function toggleDay(d) {
+  const isOpen = document.getElementById("open-" + d).checked;
+  const times  = document.getElementById("times-" + d);
+  const row    = document.getElementById("srow-" + d);
+  times.style.opacity       = isOpen ? "1" : "0.35";
+  times.style.pointerEvents = isOpen ? "auto" : "none";
+  row.classList.toggle("is-open", isOpen);
 }
 
 function saveSchedule() {
-  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
   const schedule = {};
-  days.forEach(d => {
+  DAY_KEYS.forEach(d => {
     schedule[d] = {
       open:     document.getElementById("open-" + d).checked,
       start:    document.getElementById("start-" + d).value,
@@ -369,78 +401,107 @@ function saveSchedule() {
     };
   });
   Storage.saveSchedule(schedule);
-  document.getElementById("scheduleMsg").innerHTML =
-    `<div class="alert alert-success">✅ Schedule saved!</div>`;
-  setTimeout(() => document.getElementById("scheduleMsg").innerHTML = "", 3000);
+  showMsg("scheduleMsg", "לוח הזמנים נשמר בהצלחה.");
 }
 
 function resetSchedule() {
-  if (confirm("Reset schedule to default?")) {
+  if (confirm("לאפס את לוח הזמנים לברירת המחדל?")) {
     Storage.saveSchedule(JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)));
     renderScheduleEditor();
   }
 }
 
-// ── Pricing editor ────────────────────────────
-// Prices are stored in localStorage so they override data.js defaults
-function getPricing() {
-  const saved = localStorage.getItem("rcw_pricing");
-  return saved ? JSON.parse(saved) : null;
-}
+// ── Services editor ────────────────────────────
+function renderServicesEditor() {
+  document.getElementById("servicesEditor").innerHTML = SERVICES.map((s, i) => `
+    <div class="service-editor-block">
+      <div class="svc-name">שירות ${i + 1}</div>
 
-function savePricingData(data) {
-  localStorage.setItem("rcw_pricing", JSON.stringify(data));
-}
-
-function renderPricingEditor() {
-  const editor = document.getElementById("pricingEditor");
-  editor.innerHTML = SERVICES.map(s => `
-    <div style="margin-bottom:20px;padding:16px;border:1.5px solid #e0e0e0;border-radius:10px">
-      <div style="font-weight:700;font-size:1.05rem;margin-bottom:12px">${s.icon} ${s.name}</div>
       <div class="form-group">
-        <label>Duration (minutes)</label>
-        <input type="number" id="dur-${s.id}" value="${s.duration}" min="5" max="300" />
+        <label>שם השירות</label>
+        <input type="text" id="svc-name-${s.id}" value="${s.name}" />
       </div>
-      ${CAR_TYPES.map(c => `
-        <div class="form-group">
-          <label>${c.icon} ${c.name} price (${CONFIG.currency})</label>
-          <input type="number" id="price-${s.id}-${c.id}" value="${s.prices[c.id]}" min="0" step="0.50" />
-        </div>
-      `).join("")}
+      <div class="form-group">
+        <label>תיאור</label>
+        <input type="text" id="svc-desc-${s.id}" value="${s.description}" />
+      </div>
+      <div class="form-group">
+        <label>משך (דקות)</label>
+        <input type="number" id="svc-dur-${s.id}" value="${s.duration}" min="5" max="300" style="width:120px" />
+      </div>
+
+      <div style="font-weight:600;font-size:0.85rem;color:#374151;margin-bottom:10px">מחירים לפי סוג רכב</div>
+      <div class="price-row">
+        ${CAR_TYPES.map(c => `
+          <div class="form-group">
+            <label>${c.name}</label>
+            <input type="number" id="svc-price-${s.id}-${c.id}" value="${s.prices[c.id]}" min="0" step="0.5" />
+          </div>
+        `).join("")}
+      </div>
     </div>
   `).join("");
 }
 
-function savePricing() {
-  const data = {};
+function saveServices() {
   SERVICES.forEach(s => {
-    data[s.id] = {
-      duration: parseInt(document.getElementById("dur-" + s.id).value),
-      prices: {}
-    };
+    s.name        = document.getElementById("svc-name-" + s.id).value.trim();
+    s.description = document.getElementById("svc-desc-" + s.id).value.trim();
+    s.duration    = parseInt(document.getElementById("svc-dur-" + s.id).value);
     CAR_TYPES.forEach(c => {
-      data[s.id].prices[c.id] = parseFloat(document.getElementById(`price-${s.id}-${c.id}`).value);
+      s.prices[c.id] = parseFloat(document.getElementById(`svc-price-${s.id}-${c.id}`).value);
     });
-    // Apply to live SERVICES array so it takes effect immediately
-    s.duration = data[s.id].duration;
-    s.prices = data[s.id].prices;
   });
-  savePricingData(data);
-  document.getElementById("pricingMsg").innerHTML =
-    `<div class="alert alert-success">✅ Prices saved! Customers will see the new prices immediately.</div>`;
-  setTimeout(() => document.getElementById("pricingMsg").innerHTML = "", 3000);
+  Storage.saveServices(SERVICES);
+  showMsg("servicesMsg", "השירותים נשמרו בהצלחה.");
+}
+
+function resetServices() {
+  if (confirm("לאפס שירותים לברירת מחדל?")) {
+    Storage.saveServices(JSON.parse(JSON.stringify(DEFAULT_SERVICES)));
+    SERVICES.length = 0;
+    DEFAULT_SERVICES.forEach(s => SERVICES.push(JSON.parse(JSON.stringify(s))));
+    renderServicesEditor();
+  }
+}
+
+// ── Car types editor ───────────────────────────
+function renderCarTypesEditor() {
+  document.getElementById("carTypesEditor").innerHTML = CAR_TYPES.map((c, i) => `
+    <div class="service-editor-block">
+      <div class="svc-name">סוג רכב ${i + 1}</div>
+      <div class="form-group">
+        <label>שם</label>
+        <input type="text" id="ct-name-${c.id}" value="${c.name}" />
+      </div>
+      <div class="form-group">
+        <label>תיאור (לדוגמה: סדאן, ג'יפ)</label>
+        <input type="text" id="ct-desc-${c.id}" value="${c.description}" />
+      </div>
+    </div>
+  `).join("");
+}
+
+function saveCarTypes() {
+  CAR_TYPES.forEach(c => {
+    c.name        = document.getElementById("ct-name-" + c.id).value.trim();
+    c.description = document.getElementById("ct-desc-" + c.id).value.trim();
+  });
+  Storage.saveCarTypes(CAR_TYPES);
+  showMsg("carTypesMsg", "סוגי הרכב נשמרו בהצלחה.");
 }
 
 // ── Settings ──────────────────────────────────
 function loadSettings() {
-  const saved = localStorage.getItem("rcw_settings");
-  const s = saved ? JSON.parse(saved) : CONFIG;
-  document.getElementById("settingName").value     = s.businessName    || CONFIG.businessName;
-  document.getElementById("settingEmail").value    = s.ownerEmail      || CONFIG.ownerEmail;
-  document.getElementById("settingBittId").value   = s.bittWalletId    || CONFIG.bittWalletId;
-  document.getElementById("settingBittName").value = s.bittAccountName || CONFIG.bittAccountName;
-  document.getElementById("settingWindow").value   = s.bookingWindowDays || CONFIG.bookingWindowDays;
-  document.getElementById("settingMsg").value      = s.confirmationMessage || CONFIG.confirmationMessage;
+  const s = Storage.getSettings() || CONFIG;
+  document.getElementById("settingName").value         = s.businessName        || CONFIG.businessName;
+  document.getElementById("settingEmail").value        = s.ownerEmail          || CONFIG.ownerEmail;
+  document.getElementById("settingBittId").value       = s.bittWalletId        || CONFIG.bittWalletId;
+  document.getElementById("settingBittName").value     = s.bittAccountName     || CONFIG.bittAccountName;
+  document.getElementById("settingCurrency").value     = s.currency            || CONFIG.currency;
+  document.getElementById("settingCurrencyCode").value = s.currencyCode        || CONFIG.currencyCode;
+  document.getElementById("settingWindow").value       = s.bookingWindowDays   || CONFIG.bookingWindowDays;
+  document.getElementById("settingMsg").value          = s.confirmationMessage || CONFIG.confirmationMessage;
 }
 
 function saveSettings() {
@@ -449,40 +510,27 @@ function saveSettings() {
     ownerEmail:          document.getElementById("settingEmail").value.trim(),
     bittWalletId:        document.getElementById("settingBittId").value.trim(),
     bittAccountName:     document.getElementById("settingBittName").value.trim(),
+    currency:            document.getElementById("settingCurrency").value.trim(),
+    currencyCode:        document.getElementById("settingCurrencyCode").value.trim(),
     bookingWindowDays:   parseInt(document.getElementById("settingWindow").value),
     confirmationMessage: document.getElementById("settingMsg").value.trim()
   };
-  localStorage.setItem("rcw_settings", JSON.stringify(s));
-  // Apply live
+  Storage.saveSettings(s);
   Object.assign(CONFIG, s);
-  document.getElementById("settingsMsg").innerHTML =
-    `<div class="alert alert-success">✅ Settings saved!</div>`;
-  setTimeout(() => document.getElementById("settingsMsg").innerHTML = "", 3000);
+  showMsg("settingsMsg", "ההגדרות נשמרו בהצלחה.");
+}
+
+// ── Helpers ───────────────────────────────────
+function showMsg(id, text) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="alert alert-success"><div class="alert-dot"></div><div>${text}</div></div>`;
+  setTimeout(() => el.innerHTML = "", 3500);
 }
 
 // ── Init ──────────────────────────────────────
 if (sessionStorage.getItem("rcw_admin") === "1") {
-  showTab("bookings");
-  loadSettings();
+  showTab("bookings", document.querySelector(".tab-btn"));
 }
-
-// Apply saved pricing on load
-(function applyPricing() {
-  const saved = getPricing();
-  if (!saved) return;
-  SERVICES.forEach(s => {
-    if (saved[s.id]) {
-      s.duration = saved[s.id].duration;
-      s.prices   = saved[s.id].prices;
-    }
-  });
-})();
-
-// Apply saved settings on load
-(function applySettings() {
-  const saved = localStorage.getItem("rcw_settings");
-  if (saved) Object.assign(CONFIG, JSON.parse(saved));
-})();
 </script>
 
 </body>
