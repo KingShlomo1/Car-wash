@@ -1,104 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pricing – Rei's Car Wash</title>
+  <title>תמחור - שטיפת רכב של רעי</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header>
-  <h1>🚗 Rei's Car Wash</h1>
-  <p>Transparent pricing — no surprises</p>
-  <nav>
-    <a href="index.html">Book Now</a>
-    <a href="pricing.html" class="active">Pricing</a>
-    <a href="admin.html">Admin</a>
-  </nav>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 10H3l1.5-5h15L21 10zM3 10l-1 4h19l-1-4M6 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>שטיפת רכב של רעי</h1>
+        <p>מקצועי, מהיר, אמין</p>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">הזמן תור</a>
+      <a href="pricing.html" class="active">תמחור</a>
+      <a href="admin.html">ניהול</a>
+    </nav>
+  </div>
+  <div class="header-divider"></div>
 </header>
+
+<div class="page-hero">
+  <h2>מחירון שירותים</h2>
+  <p>תמחור שקוף וברור - ללא הפתעות</p>
+</div>
 
 <div class="container">
 
   <div class="card">
-    <h2>Service Prices</h2>
+    <div class="card-title">מחירי שירותים</div>
     <table class="pricing-table" id="pricingTable"></table>
   </div>
 
   <div class="card">
-    <h2>Service Details</h2>
+    <div class="card-title">פירוט שירותים</div>
     <div id="serviceDetails"></div>
   </div>
 
   <div class="card">
-    <h2>Opening Hours</h2>
-    <div id="openingHours"></div>
+    <div class="card-title">שעות פעילות</div>
+    <table class="hours-table" id="openingHours"></table>
   </div>
 
-  <div style="text-align:center;margin-bottom:32px">
-    <a href="index.html" class="btn btn-primary" style="width:auto;padding:12px 40px">
-      Book an appointment →
+  <div style="text-align:center;margin-bottom:8px">
+    <a href="index.html" class="btn btn-primary" style="width:auto;padding:13px 48px;font-size:1rem">
+      הזמן תור עכשיו
     </a>
   </div>
 
 </div>
 
+<footer>
+  <p>שטיפת רכב של רעי &copy; 2024 &nbsp;|&nbsp; כל הזכויות שמורות</p>
+</footer>
+
 <script src="data.js"></script>
 <script>
-// ── Pricing table ─────────────────────────────
-(function renderPricing() {
-  const carTypeHeaders = CAR_TYPES.map(c => `<th>${c.icon} ${c.name}<br><small>${c.description}</small></th>`).join("");
-  const header = `<thead><tr><th>Service</th>${carTypeHeaders}<th>Duration</th></tr></thead>`;
+// Pricing table
+(function() {
+  const headers = CAR_TYPES.map(c =>
+    `<th>${c.name}<br><span style="font-weight:400;opacity:0.75;font-size:0.75rem">${c.description}</span></th>`
+  ).join("");
 
   const rows = SERVICES.map(s => {
     const prices = CAR_TYPES.map(c =>
-      `<td style="font-weight:700;color:#1a73e8">${CONFIG.currency}${s.prices[c.id]}</td>`
+      `<td class="price-cell">${CONFIG.currency}${s.prices[c.id]}</td>`
     ).join("");
     return `<tr>
-      <td><strong>${s.icon} ${s.name}</strong><br><small style="color:#777">${s.description}</small></td>
+      <td><strong>${s.name}</strong><br><span style="color:#6b7280;font-size:0.8rem">${s.description}</span></td>
       ${prices}
-      <td>${s.duration} min</td>
+      <td style="color:#64748b">${s.duration} דק'</td>
     </tr>`;
   }).join("");
 
-  document.getElementById("pricingTable").innerHTML = header + `<tbody>${rows}</tbody>`;
+  const durationHeader = `<th>משך</th>`;
+  document.getElementById("pricingTable").innerHTML =
+    `<thead><tr><th>שירות</th>${headers}${durationHeader}</tr></thead><tbody>${rows}</tbody>`;
 })();
 
-// ── Service detail cards ──────────────────────
-(function renderServiceDetails() {
-  document.getElementById("serviceDetails").innerHTML = SERVICES.map(s => `
-    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #eee">
-      <span style="font-size:2.2rem">${s.icon}</span>
+// Service detail cards
+(function() {
+  document.getElementById("serviceDetails").innerHTML = SERVICES.map((s, i) => `
+    <div style="display:flex;gap:16px;align-items:flex-start;${i < SERVICES.length - 1 ? "padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #f1f5f9" : ""}">
+      <div style="width:40px;height:40px;background:#eff6ff;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
       <div>
-        <strong style="font-size:1.05rem">${s.name}</strong>
-        <p style="color:#555;margin:4px 0">${s.description}</p>
-        <span style="font-size:0.85rem;color:#888">⏱ ${s.duration} minutes per session</span>
+        <div style="font-weight:700;font-size:0.95rem;color:#1a1a2e">${s.name}</div>
+        <div style="color:#64748b;font-size:0.85rem;margin-top:3px">${s.description}</div>
+        <div style="color:#94a3b8;font-size:0.8rem;margin-top:4px">${s.duration} דקות לכל ביקור</div>
       </div>
     </div>
   `).join("");
 })();
 
-// ── Opening hours ─────────────────────────────
-(function renderHours() {
+// Opening hours
+(function() {
   const schedule = Storage.getSchedule();
-  const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
-  const dayLabels = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const days = [
+    ["sunday", "ראשון"], ["monday", "שני"], ["tuesday", "שלישי"],
+    ["wednesday", "רביעי"], ["thursday", "חמישי"], ["friday", "שישי"], ["saturday", "שבת"]
+  ];
 
-  document.getElementById("openingHours").innerHTML = `
-    <table style="width:100%;border-collapse:collapse;font-size:0.95rem">
-      ${days.map((d, i) => {
-        const s = schedule[d];
-        return `<tr>
-          <td style="padding:8px 12px;font-weight:600;color:#444">${dayLabels[i]}</td>
-          <td style="padding:8px 12px;color:${s.open ? '#2e7d32' : '#c62828'}">
-            ${s.open
-              ? `${Utils.formatTime(s.start)} – ${Utils.formatTime(s.end)}`
-              : "Closed"}
-          </td>
-        </tr>`;
-      }).join("")}
-    </table>
-  `;
+  document.getElementById("openingHours").innerHTML = days.map(([d, label]) => {
+    const s = schedule[d];
+    return `<tr>
+      <td>${label}</td>
+      <td class="${s.open ? "open" : "closed"}">
+        ${s.open ? Utils.formatTime(s.start) + " - " + Utils.formatTime(s.end) : "סגור"}
+      </td>
+    </tr>`;
+  }).join("");
 })();
 </script>
 

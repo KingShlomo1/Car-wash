@@ -1,82 +1,63 @@
 /* =============================================
    Rei's Car Wash — Shared Data & Config
-   Edit this file to customise your business.
+   Edit this file or use the admin panel.
    ============================================= */
 
 const CONFIG = {
-  businessName: "Rei's Car Wash",
-  ownerEmail: "reis.carwash@gmail.com",      // ← change to your email
+  businessName: "שטיפת רכב של רעי",
+  ownerEmail: "reis.carwash@gmail.com",
 
-  // ── Bitt / DCash settings ──────────────────
-  bittWalletId: "1868-555-0000",             // ← your Bitt/DCash phone number or wallet ID
-  bittAccountName: "Rei's Car Wash",         // ← name shown on the payment screen
+  // Bit (ביט) / העברה בנקאית
+  bittWalletId: "050-000-0000",
+  bittAccountName: "שטיפת רכב של רעי",
 
-  currency: "$",
-  currencyCode: "XCD",                       // Eastern Caribbean Dollar (change if needed)
+  currency: "₪",
+  currencyCode: "ILS",
 
-  // How far ahead customers can book (days)
   bookingWindowDays: 30,
 
-  // Confirmation message shown after booking
   confirmationMessage:
-    "Thank you for booking with Rei's Car Wash! " +
-    "Please complete your Bitt / DCash payment to confirm your appointment. " +
-    "We'll see you soon!"
+    "תודה שהזמנת אצל שטיפת רכב של רעי! " +
+    "אנא השלם את התשלום דרך אפליקציית ביט כדי לאשר את התור שלך. " +
+    "נתראה בקרוב!"
 };
 
-/* ── Services ──────────────────────────────────
-   Add, remove, or rename services here.
-   duration: minutes the slot will be blocked.
+/* ── Default services ──────────────────────────
+   Managed via admin panel. Saved to localStorage.
    ─────────────────────────────────────────── */
-const SERVICES = [
+const DEFAULT_SERVICES = [
   {
     id: "outside",
-    name: "Outside Wash",
-    icon: "🚿",
-    description: "Full exterior wash, rinse & dry",
-    duration: 30,    // minutes
-    prices: {
-      "5-seater": 15,
-      "7-seater": 20
-    }
+    name: "שטיפה חיצונית",
+    description: "שטיפה חיצונית מלאה, שטיפה וייבוש",
+    duration: 30,
+    prices: { "5-seater": 15, "7-seater": 20 }
   },
   {
     id: "inside",
-    name: "Inside Clean",
-    icon: "🪣",
-    description: "Full interior vacuum & wipe-down",
-    duration: 45,    // minutes
-    prices: {
-      "5-seater": 20,
-      "7-seater": 25
-    }
+    name: "ניקוי פנימי",
+    description: "שאיבת אבק פנימית ומגבון מלא",
+    duration: 45,
+    prices: { "5-seater": 20, "7-seater": 25 }
   },
   {
     id: "both",
-    name: "Full Detail",
-    icon: "✨",
-    description: "Complete inside + outside package",
-    duration: 60,    // minutes
-    prices: {
-      "5-seater": 30,
-      "7-seater": 40
-    }
+    name: "ניקוי מלא",
+    description: "חבילה מלאה - פנים וחוץ",
+    duration: 60,
+    prices: { "5-seater": 30, "7-seater": 40 }
   }
 ];
 
-/* ── Car Types ─────────────────────────────────
-   Add more car types as needed.
+/* ── Default car types ────────────────────────
+   Managed via admin panel. Saved to localStorage.
    ─────────────────────────────────────────── */
-const CAR_TYPES = [
-  { id: "5-seater", name: "5-Seater", icon: "🚗", description: "Sedan, Hatchback, Coupe" },
-  { id: "7-seater", name: "7-Seater", icon: "🚐", description: "SUV, Van, Minivan" }
+const DEFAULT_CAR_TYPES = [
+  { id: "5-seater", name: "5 מושבים", description: "סדאן, האצ'בק, קופה" },
+  { id: "7-seater", name: "7 מושבים", description: "ג'יפ, ואן, מיניוואן" }
 ];
 
-/* ── Default Weekly Schedule ───────────────────
-   open: false = closed that day
-   start / end: 24-hour "HH:MM" format
-   slotStep: minutes between each available slot
-   ─────────────────────────────────────────── */
+/* ── Default weekly schedule ──────────────── */
 const DEFAULT_SCHEDULE = {
   monday:    { open: true,  start: "08:00", end: "17:00", slotStep: 60 },
   tuesday:   { open: true,  start: "08:00", end: "17:00", slotStep: 60 },
@@ -87,125 +68,131 @@ const DEFAULT_SCHEDULE = {
   sunday:    { open: false, start: "09:00", end: "13:00", slotStep: 60 }
 };
 
-/* ── Storage helpers ───────────────────────────
-   Uses the browser's localStorage so no
-   database or server is required.
-   ─────────────────────────────────────────── */
+/* ── Storage ─────────────────────────────────── */
 const Storage = {
   getSchedule() {
-    const saved = localStorage.getItem("rcw_schedule");
-    return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+    const s = localStorage.getItem("rcw_schedule");
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
   },
-  saveSchedule(schedule) {
-    localStorage.setItem("rcw_schedule", JSON.stringify(schedule));
-  },
+  saveSchedule(v) { localStorage.setItem("rcw_schedule", JSON.stringify(v)); },
+
   getBookings() {
-    const saved = localStorage.getItem("rcw_bookings");
-    return saved ? JSON.parse(saved) : [];
+    const s = localStorage.getItem("rcw_bookings");
+    return s ? JSON.parse(s) : [];
   },
-  saveBookings(bookings) {
-    localStorage.setItem("rcw_bookings", JSON.stringify(bookings));
-  },
+  saveBookings(v) { localStorage.setItem("rcw_bookings", JSON.stringify(v)); },
   addBooking(booking) {
-    const bookings = this.getBookings();
+    const list = this.getBookings();
     booking.id = Date.now().toString();
     booking.createdAt = new Date().toISOString();
     booking.status = "pending";
-    bookings.push(booking);
-    this.saveBookings(bookings);
+    list.push(booking);
+    this.saveBookings(list);
     return booking;
   },
   updateBookingStatus(id, status) {
-    const bookings = this.getBookings();
-    const idx = bookings.findIndex(b => b.id === id);
-    if (idx !== -1) {
-      bookings[idx].status = status;
-      this.saveBookings(bookings);
-    }
+    const list = this.getBookings();
+    const i = list.findIndex(b => b.id === id);
+    if (i !== -1) { list[i].status = status; this.saveBookings(list); }
   },
   deleteBooking(id) {
-    const bookings = this.getBookings().filter(b => b.id !== id);
-    this.saveBookings(bookings);
-  }
+    this.saveBookings(this.getBookings().filter(b => b.id !== id));
+  },
+
+  getServices() {
+    const s = localStorage.getItem("rcw_services");
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_SERVICES));
+  },
+  saveServices(v) { localStorage.setItem("rcw_services", JSON.stringify(v)); },
+
+  getCarTypes() {
+    const s = localStorage.getItem("rcw_car_types");
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_CAR_TYPES));
+  },
+  saveCarTypes(v) { localStorage.setItem("rcw_car_types", JSON.stringify(v)); },
+
+  getSettings() {
+    const s = localStorage.getItem("rcw_settings");
+    return s ? JSON.parse(s) : null;
+  },
+  saveSettings(v) { localStorage.setItem("rcw_settings", JSON.stringify(v)); }
 };
 
-/* ── Utility helpers ─────────────────────────── */
+// Live arrays — always loaded from storage
+let SERVICES  = Storage.getServices();
+let CAR_TYPES = Storage.getCarTypes();
+
+// Apply saved settings to CONFIG on every page load
+(function applySettings() {
+  const s = Storage.getSettings();
+  if (s) Object.assign(CONFIG, s);
+})();
+
+/* ── Utils ───────────────────────────────────── */
 const Utils = {
-  // "08:00" → "8:00 AM"
   formatTime(t) {
     const [h, m] = t.split(":").map(Number);
-    const ampm = h >= 12 ? "PM" : "AM";
+    const ampm = h >= 12 ? "אחה\"צ" : "לפנה\"צ";
     const hour = h % 12 || 12;
     return `${hour}:${m.toString().padStart(2, "0")} ${ampm}`;
   },
 
-  // "2025-03-18" → "Tuesday, March 18 2025"
   formatDate(d) {
-    return new Date(d + "T12:00:00").toLocaleDateString("en-US", {
+    return new Date(d + "T12:00:00").toLocaleDateString("he-IL", {
       weekday: "long", year: "numeric", month: "long", day: "numeric"
     });
   },
 
-  // Return weekday name for a date string "YYYY-MM-DD"
   getDayName(dateStr) {
     return new Date(dateStr + "T12:00:00")
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
   },
 
-  // Generate time slots for a day given schedule settings and booked slots
   generateSlots(daySchedule, bookedSlots, serviceDuration) {
     const slots = [];
     if (!daySchedule.open) return slots;
-
-    const [startH, startM] = daySchedule.start.split(":").map(Number);
-    const [endH, endM]   = daySchedule.end.split(":").map(Number);
-    const startMins = startH * 60 + startM;
-    const endMins   = endH   * 60 + endM;
-    const step      = daySchedule.slotStep || 60;
-
-    for (let mins = startMins; mins + serviceDuration <= endMins; mins += step) {
-      const hh = String(Math.floor(mins / 60)).padStart(2, "0");
-      const mm = String(mins % 60).padStart(2, "0");
+    const [sh, sm] = daySchedule.start.split(":").map(Number);
+    const [eh, em] = daySchedule.end.split(":").map(Number);
+    const startM = sh * 60 + sm;
+    const endM   = eh * 60 + em;
+    const step   = daySchedule.slotStep || 60;
+    for (let m = startM; m + serviceDuration <= endM; m += step) {
+      const hh = String(Math.floor(m / 60)).padStart(2, "0");
+      const mm = String(m % 60).padStart(2, "0");
       const timeStr = `${hh}:${mm}`;
-
-      // A slot is "booked" if it overlaps with any existing booking
       const isBooked = bookedSlots.some(b => {
-        const bStart = b.startMins;
-        const bEnd   = b.startMins + b.duration;
-        const sEnd   = mins + serviceDuration;
-        return mins < bEnd && sEnd > bStart;
+        const bEnd = b.startMins + b.duration;
+        const sEnd = m + serviceDuration;
+        return m < bEnd && sEnd > b.startMins;
       });
-
       slots.push({ time: timeStr, booked: isBooked });
     }
     return slots;
   },
 
-  // Generate a mailto confirmation link (Bitt / DCash payment instructions)
   mailtoLink(booking) {
     const service = SERVICES.find(s => s.id === booking.serviceId);
     const car     = CAR_TYPES.find(c => c.id === booking.carTypeId);
     const price   = service.prices[booking.carTypeId];
-
-    const subject = encodeURIComponent(`Booking Confirmation – ${CONFIG.businessName}`);
+    const subject = encodeURIComponent(`אישור הזמנה - ${CONFIG.businessName}`);
     const body = encodeURIComponent(
-      `Hi ${booking.customerName},\n\n` +
-      `Your booking at ${CONFIG.businessName} is confirmed!\n\n` +
-      `📅 Date:    ${Utils.formatDate(booking.date)}\n` +
-      `⏰ Time:    ${Utils.formatTime(booking.time)}\n` +
-      `🚗 Car:     ${car.name} (${car.description})\n` +
-      `🧼 Service: ${service.name}\n` +
-      `💰 Amount:  ${CONFIG.currency}${price} ${CONFIG.currencyCode}\n\n` +
-      `HOW TO PAY (Bitt / DCash):\n` +
-      `1. Open your DCash app\n` +
-      `2. Tap "Send Money"\n` +
-      `3. Search for: ${CONFIG.bittWalletId}\n` +
-      `4. Enter amount: ${CONFIG.currency}${price}\n` +
-      `5. Add note: Booking #${booking.id}\n` +
-      `6. Confirm the payment\n\n` +
+      `שלום ${booking.customerName},\n\n` +
+      `ההזמנה שלך אצל ${CONFIG.businessName} אושרה!\n\n` +
+      `תאריך:  ${Utils.formatDate(booking.date)}\n` +
+      `שעה:    ${Utils.formatTime(booking.time)}\n` +
+      `רכב:    ${car.name} (${car.description})\n` +
+      `שירות:  ${service.name}\n` +
+      `סכום:   ${CONFIG.currency}${price} ${CONFIG.currencyCode}\n\n` +
+      `תשלום באמצעות ביט:\n` +
+      `1. פתח את אפליקציית ביט\n` +
+      `2. לחץ על "שלח כסף"\n` +
+      `3. חפש: ${CONFIG.bittWalletId}\n` +
+      `4. הכנס סכום: ${CONFIG.currency}${price}\n` +
+      `5. הוסף הערה: הזמנה מספר ${booking.id}\n` +
+      `6. אשר את התשלום\n\n` +
       `${CONFIG.confirmationMessage}\n\n` +
-      `– The ${CONFIG.businessName} team`
+      `- צוות ${CONFIG.businessName}`
     );
     return `mailto:${booking.customerEmail}?subject=${subject}&body=${body}`;
   }
